@@ -1,0 +1,13 @@
+html, body {
+  height: 100%;
+  margin: 0;
+  background: #ffffff; /*#bfe8ff;*/
+  font-family: Arial, sans-serif;
+}
+#app {
+  height: 100%;
+}
+canvas {
+  display: block;
+  margin: 0 auto;
+}
