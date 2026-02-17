@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import type { SentenceSceneData } from "../types/SentenceSceneData";
-import { WordCard } from "../objects/WordCard";
+import { WordCard, W_DELTA } from "../objects/WordCard";
 import { SentenceScreenLook } from "../ui/SentenceScreenLook";
 import { SFX } from "../audio/soundKeys";
 
@@ -83,7 +83,7 @@ export class SentenceScene extends Phaser.Scene {
     }
     // Slot row positions (center-ish)
     // Preserve existing single-row positioning.
-    const slotSpacing = 170 - 40; //170;
+    const slotSpacing = 170 - (W_DELTA/2); //170;
     const rowSpacing = 95;
 
     // Base Y matches previous single-row slotY.
@@ -111,7 +111,7 @@ export class SentenceScene extends Phaser.Scene {
 
         const outline = this.add
           //.rectangle(x, y, 150, 70, 0xffffff, 0.25)
-          .rectangle(x, y, 150-40, 70, 0xffffff, 0.25)
+          .rectangle(x, y, 150-W_DELTA, 70, 0xffffff, 0.25)
           .setStrokeStyle(5, 0x2f7dd1, 1);
         (outline as any).setRadius?.(18);
 

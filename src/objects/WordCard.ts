@@ -2,6 +2,8 @@ import Phaser from "phaser";
 import { PRONUNCIATION_AUDIO } from "../audio/pronunciations";
 import { PronunciationRegistry } from "../audio/pronunciationRegistry";
 
+export const W_DELTA = 25
+
 export type WordCardOptions = {
   width?: number;
   height?: number;
@@ -47,7 +49,7 @@ export class WordCard extends Phaser.GameObjects.Container {
     word: string,
     opts: WordCardOptions = {}
   ) {
-    const w = opts.width ?? 100; //140;
+    const w = opts.width ?? 140 - W_DELTA; //140;
     const h = opts.height ?? 60; //64;
 
     // Container positioned by TOP-LEFT (reliable)

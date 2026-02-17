@@ -13,8 +13,15 @@ from flask_cors import CORS
 app = Flask(__name__)
 
 # Allow your Vite dev server to talk to Flask
-CORS(app, supports_credentials=False, origins=["http://localhost:5173"])
+# CORS(app, supports_credentials=False, origins=["http://localhost:5173", "http://http://46.62.200.84:5173"])
+from flask_cors import CORS
 
+CORS(
+    app,
+    resources={r"/api/*": {"origins": ["http://46.62.200.84:5173", "http://localhost:5173"]}},
+    allow_headers=["Content-Type", "X-Player-Id"],
+    methods=["GET", "POST", "OPTIONS"],
+)
 
 # ----------------------------
 # Data: sequences + resources
@@ -205,7 +212,7 @@ def api_reset():
 
 
 if __name__ == "__main__":
-    app.run(host="localhost", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)
 
 
 

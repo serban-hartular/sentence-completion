@@ -49,7 +49,7 @@ class EtreAvoir(QuestionSequenceFactory):
             'sommes' : '/assets/pron/fr/sommes.m4a',
             'êtes' : '/assets/pron/fr/etes.m4a',
             'sont' : '/assets/pron/fr/sont.m4a',
-            'ai' : '/assets/pron/fr/ai.m4a',
+            'ai' : '/assets/pron/fr/e.m4a',
             'as' : '/assets/pron/fr/a.m4a',
             'a' : '/assets/pron/fr/a.m4a',
             'avons' : '/assets/pron/fr/avons.m4a',

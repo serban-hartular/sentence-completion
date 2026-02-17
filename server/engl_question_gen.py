@@ -116,7 +116,7 @@ class MakeQuestionSequence(QuestionSequenceFactory):
                 correct=question + short_answer)
     
     def get_pronounciations(self) -> dict:
-        return {'she':'/assets/pron/en/she.m4a'}
+        return { }
     
 def statement_to_question(sent : dict[str, str], **kwargs) -> QuestionData:
     split_words = kwargs.get('split_words')

@@ -86,8 +86,9 @@ export class WelcomeScene extends Phaser.Scene {
     try {
       const res = await fetchSequences();
       sequences = res.sequences;
-    } catch {
-      statusText.setText("Server error loading sequences.");
+    } catch (e) {
+    console.error("fetchSequences failed:", e);
+    statusText.setText("Server error loading sequences.");
       return;
     }
 
