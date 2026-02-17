@@ -4,6 +4,8 @@ import { WordCard } from "../objects/WordCard";
 import { SentenceScreenLook } from "../ui/SentenceScreenLook";
 import { SFX } from "../audio/soundKeys";
 
+import { PronunciationRegistry } from "../audio/pronunciationRegistry";
+
 
 type Slot = {
   x: number;
@@ -25,6 +27,8 @@ export class SentenceScene extends Phaser.Scene {
 
   constructor() {
     super("sentence");
+    console.log("Pron reg is:")
+    console.log(PronunciationRegistry)
   }
 
   init(data: SentenceSceneData & { look?: SentenceScreenLook }) {
@@ -64,9 +68,21 @@ export class SentenceScene extends Phaser.Scene {
     // Move prompt higher if there is more than one row
     const promptY = rowCount > 1 ? 22 : 36;
 
-    // Prompt (top)
-    this.add.text(width / 2, promptY, this.dataIn.prompt, this.look.promptTextStyle).setOrigin(0.5);
 
+    let prompt1 = this.dataIn.prompt;
+    let prompt2 = ""
+    if (this.dataIn.prompt.includes("\n")) {
+      // console.log(this.dataIn.prompt, this.dataIn.prompt.split("\n", 2))
+      [prompt1, prompt2] = this.dataIn.prompt.split("\n", 2)
+    }
+    if(prompt2 == "") {
+    // Prompt (top)
+      this.add.text(width / 2, promptY, this.dataIn.prompt, this.look.promptTextStyle).setOrigin(0.5);
+    } else {
+      console.log(prompt1, prompt2)
+      this.add.text(width / 2, promptY-10, prompt1, this.look.promptTextStyle).setOrigin(0.5);
+      this.add.text(width / 2, promptY+30, prompt2, this.look.promptTextStyle).setOrigin(0.5);
+    }
     // Slot row positions (center-ish)
     // Preserve existing single-row positioning.
     const slotSpacing = 170;
@@ -117,7 +133,8 @@ export class SentenceScene extends Phaser.Scene {
         draggable: this.dataIn.initialMovable ?? false,
       });
 
-      card.currentSlotIndex = i;
+      //card.currentSlotIndex = i;
+      card.setSlotIndex(i)
 
       // Home is the slot position (top-left)
       card.homeX = card.x;
@@ -162,7 +179,7 @@ export class SentenceScene extends Phaser.Scene {
       card.setScale(1.0);
 
       const bottomAreaThreshold = Math.floor(height * 0.62);
-      if (card.currentSlotIndex !== null && card.centerY > bottomAreaThreshold) {
+      if (card.getSlotIndex() !== null && card.centerY > bottomAreaThreshold) {
         this.removeFromSlot(card);
         return;
       }
@@ -221,19 +238,22 @@ export class SentenceScene extends Phaser.Scene {
   }
 
   private removeFromSlot(card: WordCard) {
-    if (card.currentSlotIndex === null) return;
-    const slot = this.slots[card.currentSlotIndex];
+    let card_index = card.getSlotIndex()
+    if (card_index === null) return;
+    const slot = this.slots[card_index];
     if (slot.occupant === card) slot.occupant = null;
-    card.currentSlotIndex = null;
+    //card.currentSlotIndex = null;
+    card.setSlotIndex(null)
   }
 
   private trySnapOrSwap(card: WordCard) {
-    const prevIndex = card.currentSlotIndex;
+    const prevIndex = card.getSlotIndex();
 
     if (prevIndex !== null) {
       const prev = this.slots[prevIndex];
       if (prev.occupant === card) prev.occupant = null;
-      card.currentSlotIndex = null;
+      //card.currentSlotIndex = null;
+      card.setSlotIndex(null)
     }
 
     let bestIndex = -1;
@@ -256,14 +276,16 @@ export class SentenceScene extends Phaser.Scene {
       card.snapToCenter(target.x, target.y);
       this.sound.play(SFX.SNAP, { volume: 0.5 });
       target.occupant = card;
-      card.currentSlotIndex = bestIndex;
+      //card.currentSlotIndex = bestIndex;
+      card.setSlotIndex(bestIndex)
       return;
     }
 
     const other = target.occupant;
 
     target.occupant = card;
-    card.currentSlotIndex = bestIndex;
+//    card.currentSlotIndex = bestIndex;
+    card.setSlotIndex(bestIndex)
     card.snapToCenter(target.x, target.y);
     this.sound.play(SFX.SNAP, { volume: 0.5 });
 
@@ -271,14 +293,16 @@ export class SentenceScene extends Phaser.Scene {
       const prevSlot = this.slots[prevIndex];
       if (!prevSlot.occupant) {
         prevSlot.occupant = other;
-        other.currentSlotIndex = prevIndex;
+        //other.currentSlotIndex = prevIndex;
+        other.setSlotIndex(prevIndex)
         other.snapToCenter(prevSlot.x, prevSlot.y);
         this.sound.play(SFX.SNAP, { volume: 0.5 });
         return;
       }
     }
 
-    other.currentSlotIndex = null;
+    //other.currentSlotIndex = null;
+    other.setSlotIndex(null)
     other.returnHome();
   }
 
@@ -287,6 +311,7 @@ export class SentenceScene extends Phaser.Scene {
     if (current.length !== this.dataIn.correct.length) return false;
 
     for (let i = 0; i < current.length; i++) {
+      console.log(current[i], this.dataIn.correct[i])
       if (current[i] !== this.dataIn.correct[i]) return false;
     }
     return true;

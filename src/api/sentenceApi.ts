@@ -6,13 +6,13 @@ export type SequenceInfo = { id: string; name: string };
 
 export type SequencesResponse = { sequences: SequenceInfo[] };
 
-export type PronunciationEntry = { key: string; url: string };
+// export type PronunciationEntry = { key: string; url: string };
 
 export type SelectResponse =
   | {
       ok: true;
       sequenceId: string;
-      pronunciations: Record<string, PronunciationEntry>;
+      pronunciations: Record<string, string>;
     }
   | { ok: false; error: string };
 

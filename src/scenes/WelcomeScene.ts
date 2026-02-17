@@ -87,13 +87,16 @@ export class WelcomeScene extends Phaser.Scene {
 
           // Update global word -> audioKey dictionary
           setPronunciations(sel.pronunciations);
+          console.log(sel.pronunciations)
 
           // Dynamically load pronunciations returned by server
-          for (const entry of Object.values(sel.pronunciations)) {
+          for (const key in sel.pronunciations) {
             //const absUrl = toAbsoluteServerUrl(entry.url);
             // avoid double-loading keys if already loaded
-            if (!this.cache.audio.exists(entry.key)) {
-              this.load.audio(entry.key, entry.url);
+            let value = sel.pronunciations[key]
+            if (!this.cache.audio.exists(key)) {
+              console.log(key, value)
+              console.log(this.load.audio(value, value));
             }
           }
 

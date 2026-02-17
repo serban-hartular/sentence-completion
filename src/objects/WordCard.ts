@@ -16,7 +16,21 @@ export class WordCard extends Phaser.GameObjects.Container {
   homeY: number;
 
   // Slot tracking
-  currentSlotIndex: number | null = null;
+  private currentSlotIndex: number | null = null;
+
+  public setSlotIndex(newIndex : number | null) {
+    this.currentSlotIndex = newIndex
+    if(newIndex == 0) {
+      let str = this.word
+      this.label.setText(str.charAt(0).toUpperCase() + str.slice(1))
+    } else {
+      this.label.setText(this.word)
+    }
+  }
+
+  public getSlotIndex() : number | null {
+    return this.currentSlotIndex;
+  }
 
   readonly cardWidth: number;
   readonly cardHeight: number;
@@ -24,7 +38,7 @@ export class WordCard extends Phaser.GameObjects.Container {
   /** The actual interactive + draggable object (rect), for reliable hit testing */
   readonly hit: Phaser.GameObjects.Rectangle;
 
-  private label: Phaser.GameObjects.Text;
+  public label: Phaser.GameObjects.Text;
 
   constructor(
     scene: Phaser.Scene,
@@ -70,6 +84,15 @@ export class WordCard extends Phaser.GameObjects.Container {
     scene.add.existing(this);
 
     if (opts.draggable) this.enableDragging();
+
+        this.hit.on("pointerdown", () => {
+    // on click
+    const key = PronunciationRegistry[this.word];
+    if (key) {
+          this.scene.sound.play(key, { volume: 0.8 });
+        }
+    });
+
   }
 
   get centerX() {
@@ -112,13 +135,6 @@ export class WordCard extends Phaser.GameObjects.Container {
     // Hover feedback on the rect (not the container)
     this.hit.on("pointerover", () => this.setScale(1.03));
     this.hit.on("pointerout", () => this.setScale(1.0));
-    this.hit.on("pointerdown", () => {
-    // on click
-    const key = PronunciationRegistry[this.word];
-    if (key) {
-          this.scene.sound.play(key, { volume: 0.8 });
-        }
-    });
   }
 
   snapToCenter(x: number, y: number) {

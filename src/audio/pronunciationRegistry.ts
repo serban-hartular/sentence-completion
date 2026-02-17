@@ -4,10 +4,10 @@
  */
 export const PronunciationRegistry: Record<string, string> = {};
 
-export function setPronunciations(map: Record<string, { key: string }>) {
+export function setPronunciations(map: Record<string, string>) {
   // Replace existing contents
   for (const k of Object.keys(PronunciationRegistry)) delete PronunciationRegistry[k];
   for (const [word, entry] of Object.entries(map)) {
-    PronunciationRegistry[word] = entry.key;
+    PronunciationRegistry[word] = entry;
   }
 }
