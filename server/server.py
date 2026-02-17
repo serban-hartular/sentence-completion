@@ -86,9 +86,9 @@ _SEQUENCES = [
 # SEQ_BY_ID = {s["id"]: s for s in SEQUENCES}
 
 from engl_question_gen import MakeQuestionSequence
-from etre_avoir import EtreAvoir
+from etre_avoir import EtreAvoir, Numeros
 
-SequenceFactories = {c.CLASS_NAME : c for c in [MakeQuestionSequence, EtreAvoir]}
+SequenceFactories = {c.CLASS_NAME : c for c in [MakeQuestionSequence, EtreAvoir, Numeros]}
 
 @dataclasses.dataclass
 class PlayerState:

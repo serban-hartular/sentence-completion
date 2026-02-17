@@ -86,15 +86,24 @@ def _cap(s: str) -> str:
 
 class MakeQuestionSequence(QuestionSequenceFactory):
     CLASS_NAME = 'Statement to Question'
-    def __init__(self, num_q : int = 5) -> None:
+    RANDOM_TRY_LIMIT = 50
+    def __init__(self, num_q : int = 2) -> None:
         self.num_q = num_q
         self.count = 0
+        self.queue = []
     def get_next_question(self, previous_was_good : bool = True) -> QuestionData|None:
         if previous_was_good:
             self.count += 1
         if self.count > self.num_q:
             return None
-        subj, npred = generate_random_subj_npred()
+        # get random inputs, make sure you haven't used them before
+        for t in range(MakeQuestionSequence.RANDOM_TRY_LIMIT):
+            subj, npred = generate_random_subj_npred()
+            if (subj['Subj'], npred['NPred']) not in self.queue:
+                self.queue.append((subj['Subj'], npred['NPred']))
+                break
+        else:
+            return None
         statement = generate_copulative_sentence(subj, npred, affirm=True, split_words=False, short_answer=False, question=False)
         question = generate_copulative_sentence(subj, npred, affirm=True, split_words=False, short_answer=False, question=True)
         short_answer = generate_copulative_sentence(subj, npred, affirm=False, split_words=False, short_answer=True, question=False)
@@ -105,6 +114,9 @@ class MakeQuestionSequence(QuestionSequenceFactory):
                 bankWords=[w for w in question + short_answer if not set(w).intersection(',?.!\n') ],
                 slots= [w if set(w).intersection(',?.!\n') else "" for w in question + ["\n"] + short_answer],
                 correct=question + short_answer)
+    
+    def get_pronounciations(self) -> dict:
+        return {'she':'/assets/pron/en/she.m4a'}
     
 def statement_to_question(sent : dict[str, str], **kwargs) -> QuestionData:
     split_words = kwargs.get('split_words')

@@ -27,11 +27,11 @@ export class SentenceScene extends Phaser.Scene {
 
   constructor() {
     super("sentence");
-    console.log("Pron reg is:")
-    console.log(PronunciationRegistry)
   }
 
   init(data: SentenceSceneData & { look?: SentenceScreenLook }) {
+    console.log(this.cache.audio.getKeys());
+
     const { look, ...rest } = data as SentenceSceneData & { look?: SentenceScreenLook };
     this.look = look ?? new SentenceScreenLook();
 
@@ -72,20 +72,18 @@ export class SentenceScene extends Phaser.Scene {
     let prompt1 = this.dataIn.prompt;
     let prompt2 = ""
     if (this.dataIn.prompt.includes("\n")) {
-      // console.log(this.dataIn.prompt, this.dataIn.prompt.split("\n", 2))
       [prompt1, prompt2] = this.dataIn.prompt.split("\n", 2)
     }
     if(prompt2 == "") {
     // Prompt (top)
       this.add.text(width / 2, promptY, this.dataIn.prompt, this.look.promptTextStyle).setOrigin(0.5);
     } else {
-      console.log(prompt1, prompt2)
       this.add.text(width / 2, promptY-10, prompt1, this.look.promptTextStyle).setOrigin(0.5);
       this.add.text(width / 2, promptY+30, prompt2, this.look.promptTextStyle).setOrigin(0.5);
     }
     // Slot row positions (center-ish)
     // Preserve existing single-row positioning.
-    const slotSpacing = 170;
+    const slotSpacing = 170 - 40; //170;
     const rowSpacing = 95;
 
     // Base Y matches previous single-row slotY.
@@ -112,7 +110,8 @@ export class SentenceScene extends Phaser.Scene {
         const x = startX + c * slotSpacing;
 
         const outline = this.add
-          .rectangle(x, y, 150, 70, 0xffffff, 0.25)
+          //.rectangle(x, y, 150, 70, 0xffffff, 0.25)
+          .rectangle(x, y, 150-40, 70, 0xffffff, 0.25)
           .setStrokeStyle(5, 0x2f7dd1, 1);
         (outline as any).setRadius?.(18);
 
@@ -311,7 +310,6 @@ export class SentenceScene extends Phaser.Scene {
     if (current.length !== this.dataIn.correct.length) return false;
 
     for (let i = 0; i < current.length; i++) {
-      console.log(current[i], this.dataIn.correct[i])
       if (current[i] !== this.dataIn.correct[i]) return false;
     }
     return true;

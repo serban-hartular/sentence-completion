@@ -47,8 +47,8 @@ export class WordCard extends Phaser.GameObjects.Container {
     word: string,
     opts: WordCardOptions = {}
   ) {
-    const w = opts.width ?? 140;
-    const h = opts.height ?? 64;
+    const w = opts.width ?? 100; //140;
+    const h = opts.height ?? 60; //64;
 
     // Container positioned by TOP-LEFT (reliable)
     super(scene, centerX - w / 2, centerY - h / 2);
@@ -72,8 +72,8 @@ export class WordCard extends Phaser.GameObjects.Container {
     this.homeX = this.x;
     this.homeY = this.y;
 
-    // Auto-layout ONLY for words longer than five letters:
-    if (word.length > 5) {
+    // Auto-layout ONLY for words longer than six letters:
+    if (word.length > 6) {
       this.fitLongWordText(w);
     }
 

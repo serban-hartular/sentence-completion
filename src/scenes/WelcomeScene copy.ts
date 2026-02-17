@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import { fetchNextSentence, fetchSequences, selectSequence } from "../api/sentenceApi";
+import { fetchNextSentence, fetchSequences, selectSequence, toAbsoluteServerUrl } from "../api/sentenceApi";
 import { setPronunciations } from "../audio/pronunciationRegistry";
 import { SFX } from "../audio/soundKeys";
 
@@ -17,47 +17,6 @@ export class WelcomeScene extends Phaser.Scene {
     this.load.audio(SFX.DONE, "assets/sfx/success.mp3");
 
     // Do NOT preload pronunciations here anymore — those come from the server after selecting a sequence.
-  }
-
-  /**
-   * IMPORTANT:
-   * Use a fresh LoaderPlugin for dynamic pronunciation loads.
-   * Reusing this.load across scene transitions often causes the "second batch never loads" behavior.
-   */
-  private async loadPronunciations(pronunciations: Record<string, any>): Promise<void> {
-    const loader = new Phaser.Loader.LoaderPlugin(this);
-
-    let queuedAny = false;
-
-    for (const word of Object.keys(pronunciations)) {
-      // Your current server format seems to be: pronunciations[word] = "<url>"
-      // and you said you intentionally made key identical to url.
-      const value = pronunciations[word];
-
-      // If you later switch to { key, url }, this still supports it:
-      const audioKey: string = typeof value === "string" ? value : value.key;
-      const audioUrl: string =
-        typeof value === "string"
-          ? value
-          : value.url ?? `/assets/pron/${word}.mp3`;
-
-      // Only load if not already present
-      if (!this.cache.audio.exists(audioKey)) {
-        console.log("Loading", audioKey, "from", audioUrl);
-        loader.audio(audioKey, audioUrl);
-        queuedAny = true;
-      }
-    }
-
-    if (!queuedAny) return;
-
-    await new Promise<void>((resolve, reject) => {
-      loader.once(Phaser.Loader.Events.COMPLETE, () => resolve());
-      loader.once(Phaser.Loader.Events.FILE_LOAD_ERROR, (file: any) =>
-        reject(new Error(`Audio load error: ${file?.key ?? "unknown"}`))
-      );
-      loader.start();
-    });
   }
 
   async create() {
@@ -119,7 +78,7 @@ export class WelcomeScene extends Phaser.Scene {
         statusText.setText("Loading…");
 
         try {
-          const sel: any = await selectSequence(seq.id);
+          const sel = await selectSequence(seq.id);
           if (!sel.ok) {
             statusText.setText(sel.error ?? "Selection error");
             this.input.enabled = true;
@@ -130,9 +89,24 @@ export class WelcomeScene extends Phaser.Scene {
           setPronunciations(sel.pronunciations);
 
           // Dynamically load pronunciations returned by server
-          await this.loadPronunciations(sel.pronunciations);
+          for (const key in sel.pronunciations) {
+            //const absUrl = toAbsoluteServerUrl(entry.url);
+            // avoid double-loading keys if already loaded
+            let value = sel.pronunciations[key]
+            if (!this.cache.audio.exists(value)) {
+              console.log('Loading ' + value)
+              this.load.audio(value, value);
+            }
+          }
 
-          console.log("Audio cache keys now:", this.cache.audio.getKeys());
+          // Start loader only if we actually queued something
+          if (this.load.totalToLoad > 0) {
+            await new Promise<void>((resolve, reject) => {
+              this.load.once(Phaser.Loader.Events.COMPLETE, () => resolve());
+              this.load.once(Phaser.Loader.Events.FILE_LOAD_ERROR, () => reject(new Error("Audio load error")));
+              this.load.start();
+            });
+          }
 
           // Request first sentence (no result payload)
           const next = await fetchNextSentence();
@@ -142,8 +116,7 @@ export class WelcomeScene extends Phaser.Scene {
           } else {
             this.scene.start("sentence", next.data);
           }
-        } catch (e) {
-          console.error(e);
+        } catch {
           this.scene.start("result", { success: false, done: true, message: "Server error" });
         }
       });

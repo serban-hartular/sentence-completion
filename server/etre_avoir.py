@@ -56,3 +56,34 @@ class EtreAvoir(QuestionSequenceFactory):
             'avez' : '/assets/pron/fr/avez.m4a',
             'ont' : '/assets/pron/fr/ont.m4a',   
         }
+    
+class Numeros(QuestionSequenceFactory):
+    CLASS_NAME = 'Les nombres de 1 à 12'
+    NOMBRES = ['un', 'deux', 'trois', 'quatre', 'cinq', 'six', 'sept', 'huit', 'neuf',
+             'dix', 'onze', 'douze']
+    questions = [
+        QuestionData(
+            prompt="Numerele de la 1 la 6 în franceză:",
+            slots=[str(i) for i in range(1,7)] + ["\n"] + [""]*6,
+            bankWords=NOMBRES[:6],
+            correct=[str(i) for i in range(1,7)] + NOMBRES[:6],
+        ),
+        QuestionData(
+            prompt="Numerele de la 7 la 12 în franceză:",
+            slots=[str(i) for i in range(7,13)] + ["\n"] + [""]*6,
+            bankWords=NOMBRES[6:12],
+            correct=[str(i) for i in range(7,13)] + NOMBRES[6:12],
+        ),]
+    def get_pronounciations(self) -> dict:
+        return {
+            k : f'/assets/pron/fr/{k}.m4a' for k in Numeros.NOMBRES
+        }
+    def __init__(self) -> None:
+        self.count = -1
+
+    def get_next_question(self, previous_was_good: bool = True) -> QuestionData | None:
+        if previous_was_good:
+            self.count += 1
+        if self.count >= len(Numeros.questions):
+            return None
+        return Numeros.questions[self.count] 
