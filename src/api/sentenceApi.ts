@@ -5,19 +5,16 @@ const API_BASE = `${window.location.protocol}//${window.location.hostname}:5000`
 
 console.log(API_BASE);
 
+export type ScreenKind = "sentence" | "vocab";
 
-export type SequenceInfo = { id: string; name: string };
-
+export type SequenceInfo = { id: string; name: string; kind: ScreenKind };
 export type SequencesResponse = { sequences: SequenceInfo[] };
+
 
 // export type PronunciationEntry = { key: string; url: string };
 
 export type SelectResponse =
-  | {
-      ok: true;
-      sequenceId: string;
-      pronunciations: Record<string, string>;
-    }
+  | { ok: true; sequenceId: string; pronunciations: Record<string,string>; images: Record<string,string> }
   | { ok: false; error: string };
 
 export type NextResponse =

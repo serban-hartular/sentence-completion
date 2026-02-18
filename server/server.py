@@ -18,84 +18,18 @@ from flask_cors import CORS
 
 CORS(
     app,
+    supports_credentials=False, 
     resources={r"/api/*": {"origins": ["http://46.62.200.84:5173", "http://localhost:5173"]}},
     allow_headers=["Content-Type", "X-Player-Id"],
     methods=["GET", "POST", "OPTIONS"],
 )
 
-# ----------------------------
-# Data: sequences + resources
-# ----------------------------
-
-_SEQUENCES = [
-    {
-        "id": "animals_1",
-        "name": "Animals (Easy)",
-        "sentences": [
-            {
-                "prompt": "Build the sentence!",
-                "slots": ["The", "", "", ""],
-                "bankWords": ["cat", "is", "sleeping", "running"],
-                "correct": ["The", "cat", "is", "sleeping"],
-                "initialMovable": False,
-            },
-            {
-                "prompt": "Build the sentence!",
-                "slots": ["The", "", ""],
-                "bankWords": ["dog", "runs", "barks"],
-                "correct": ["The", "dog", "runs"],
-                "initialMovable": False,
-            },
-            {
-                "prompt": "Build the sentence!",
-                "slots": ["I", "", ""],
-                "bankWords": ["see", "a", "cat"],
-                "correct": ["I", "see", "cat"],
-                "initialMovable": False,
-            },
-        ],
-        "pronunciations": {
-            "cat": "/assets/pron/Meow.ogg",
-            "dog": "/assets/pron/dog_barking.ogg",
-        },
-    },
-    {
-        "id": "verbs_1",
-        "name": "Action Words",
-        "sentences": [
-            {
-                "prompt": "Make the sentence:",
-                "slots": ["We", "", ""],
-                "bankWords": ["play", "outside", "inside"],
-                "correct": ["We", "play", "outside"],
-                "initialMovable": False,
-            },
-            {
-                "prompt": "Make the sentence:",
-                "slots": ["I", "", ""],
-                "bankWords": ["jump", "high", "low"],
-                "correct": ["I", "jump", "high"],
-                "initialMovable": False,
-            },
-            {
-                "prompt": "Make the sentence:",
-                "slots": ["They", "", ""],
-                "bankWords": ["run", "fast", "slow"],
-                "correct": ["They", "run", "fast"],
-                "initialMovable": False,
-            },
-        ],
-        "pronunciations": {
-        },
-    },
-]
-
-# SEQ_BY_ID = {s["id"]: s for s in SEQUENCES}
 
 from engl_question_gen import MakeQuestionSequence
 from etre_avoir import EtreAvoir, Numeros
+from vocab_simple import VocabSimple
 
-SequenceFactories = {c.CLASS_NAME : c for c in [MakeQuestionSequence, EtreAvoir, Numeros]}
+SequenceFactories = [MakeQuestionSequence, EtreAvoir, Numeros, VocabSimple]
 
 @dataclasses.dataclass
 class PlayerState:
@@ -137,17 +71,6 @@ def _cleanup_players() -> None:
         del PLAYERS[pid]
 
 
-def _ensure_player(pid: str, seq_id = '') -> PlayerState:
-    _cleanup_players()
-    if pid not in PLAYERS:
-        PLAYERS[pid] = PlayerState(player_id=pid, last_seen=time.time(),
-                                   seq_factory=SequenceFactories[seq_id]())
-    else:
-        PLAYERS[pid].last_seen = time.time()
-    return PLAYERS[pid]
-
-
-
 # 
 # ----------------------------
 # Routes
@@ -155,7 +78,7 @@ def _ensure_player(pid: str, seq_id = '') -> PlayerState:
 
 @app.get("/api/sequences")
 def api_sequences():
-    return jsonify( {"sequences": [{"id":n, "name":n} for n in list(SequenceFactories)]})
+    return jsonify( {"sequences": [{"id":n.CLASS_NAME, "name":n.CLASS_NAME, "kind":n.SCREEN_KIND} for n in SequenceFactories]})
 
 
 @app.post("/api/select")
@@ -165,16 +88,22 @@ def api_select():
     body = request.get_json(force=True) or {}
     seq_id = body.get("sequenceId")
 
-    if seq_id not in SequenceFactories:
+    Factory = None
+    for C in SequenceFactories:
+        if C.CLASS_NAME == seq_id:
+            Factory = C
+            break
+    else:
         return jsonify({"ok": False, "error": "Unknown sequenceId"}), 400
 
-    PLAYERS[pid] = PlayerState(player_id=pid, seq_factory=SequenceFactories[seq_id]())
+    PLAYERS[pid] = PlayerState(player_id=pid, seq_factory=Factory())
 
     # pronunciation manifest: word -> {key, url}
     pron = PLAYERS[pid].seq_factory.get_pronounciations()
+    imags = PLAYERS[pid].seq_factory.get_images()
     
 
-    return jsonify({"ok": True, "sequenceId": seq_id, "pronunciations": pron})
+    return jsonify({"ok": True, "sequenceId": seq_id, "pronunciations": pron, "images":imags})
 
 
 @app.post("/api/next")
@@ -199,7 +128,7 @@ def api_next():
     if next_question is None:
         return {"done":True}
 
-    payload = {"done":False, "data":next_question.to_dict()}
+    payload = {"done":False, "data":next_question}
 
     return jsonify(payload)
 

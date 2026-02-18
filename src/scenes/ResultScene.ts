@@ -2,11 +2,16 @@ import Phaser from "phaser";
 import { fetchNextSentence } from "../api/sentenceApi";
 import { SFX } from "../audio/soundKeys";
 
+type ScreenKind = "sentence" | "vocab";
+
 type ResultData = {
   success: boolean;
   attempt?: string[]; // what the user placed into slots
   done?: boolean;
   message?: string;
+
+  // optional: if you want ResultScene to have a fallback route
+  kind?: ScreenKind;
 };
 
 export class ResultScene extends Phaser.Scene {
@@ -65,22 +70,24 @@ export class ResultScene extends Phaser.Scene {
 
       try {
         if (done) {
-          // If you want "Play again" to return to sequence picker:
           this.scene.start("welcome");
           return;
         }
 
-        // NEW: send attempt + success to server so it can adapt
-        const next = await fetchNextSentence({
+        const next: any = await fetchNextSentence({
           attempt: this.state.attempt,
           success: this.state.success,
         });
 
         if (next.done) {
           this.scene.start("result", { success: true, done: true, message: next.message });
-        } else {
-          this.scene.start("sentence", next.data);
+          return;
         }
+
+        const kind: ScreenKind = (next.kind ?? this.state.kind ?? "sentence") as ScreenKind;
+        const sceneKey = kind === "vocab" ? "vocab" : "sentence";
+
+        this.scene.start(sceneKey, next.data);
       } catch {
         this.scene.start("result", { success: false, done: true, message: "Server error" });
       }

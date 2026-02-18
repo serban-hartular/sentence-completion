@@ -91,7 +91,7 @@ class MakeQuestionSequence(QuestionSequenceFactory):
         self.num_q = num_q
         self.count = 0
         self.queue = []
-    def get_next_question(self, previous_was_good : bool = True) -> QuestionData|None:
+    def get_next_question(self, previous_was_good : bool = True) -> dict|None:
         if previous_was_good:
             self.count += 1
         if self.count > self.num_q:
@@ -113,10 +113,10 @@ class MakeQuestionSequence(QuestionSequenceFactory):
                 _cap(' '.join(statement)) + '"',
                 bankWords=[w for w in question + short_answer if not set(w).intersection(',?.!\n') ],
                 slots= [w if set(w).intersection(',?.!\n') else "" for w in question + ["\n"] + short_answer],
-                correct=question + short_answer)
+                correct=question + short_answer).to_dict()
     
-    def get_pronounciations(self) -> dict:
-        return { }
+    # def get_pronounciations(self) -> dict:
+    #     return { }
     
 def statement_to_question(sent : dict[str, str], **kwargs) -> QuestionData:
     split_words = kwargs.get('split_words')

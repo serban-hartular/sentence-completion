@@ -14,7 +14,10 @@ class QuestionData:
 
 class QuestionSequenceFactory:
     CLASS_NAME = ''
-    def get_next_question(self, previous_was_good : bool = True) -> QuestionData|None:
+    SCREEN_KIND = 'sentence'
+    def get_next_question(self, previous_was_good : bool = True) -> dict|None:
         pass
     def get_pronounciations(self) -> dict:
+        return {}
+    def get_images(self) -> dict:
         return {}
