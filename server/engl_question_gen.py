@@ -92,9 +92,12 @@ class MakeQuestionSequence(QuestionSequenceFactory):
         self.count = 0
         self.queue = []
         self.split_words = split_words
+        self.prev_question : QuestionData|None = None
     def get_next_question(self, previous_was_good : bool = True) -> dict|None:
         if previous_was_good:
             self.count += 1
+        else:
+            return self.prev_question.to_dict() if self.prev_question else None
         if self.count > self.num_q:
             return None
         # get random inputs, make sure you haven't used them before
@@ -109,12 +112,12 @@ class MakeQuestionSequence(QuestionSequenceFactory):
         question = generate_copulative_sentence(subj, npred, affirm=True, split_words=self.split_words, short_answer=False, question=True)
         short_answer = generate_copulative_sentence(subj, npred, affirm=False, split_words=self.split_words, short_answer=True, question=False)
         short_answer[0] = _cap(short_answer[0])
-
-        return QuestionData(prompt=f'{self.count}/{self.num_q} Form a question and a short negative answer from:\n "' + 
+        self.prev_question = QuestionData(prompt=f'{self.count}/{self.num_q} Form a question and a short negative answer from:\n "' + 
                 _cap(' '.join(statement)) + '"',
                 bankWords=[w for w in question + short_answer if not set(w).intersection(',?.!\n') ],
                 slots= [w if set(w).intersection(',?.!\n') else "" for w in question + ["\n"] + short_answer],
-                correct=question + short_answer).to_dict()
+                correct=question + short_answer)
+        return self.prev_question.to_dict()
     
     # def get_pronounciations(self) -> dict:
     #     return { }
