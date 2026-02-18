@@ -24,8 +24,15 @@ class VocabSimple(QuestionSequenceFactory):
                 )
     
     def get_pronounciations(self) -> dict:
-        return {}
-    
+        return {
+                'fleur':'/assets/pron/fr/fleur.m4a',
+                'soleil':'/assets/pron/fr/soleil.m4a',
+                'crayon':'/assets/pron/fr/crayon.m4a',
+                'stylo':'/assets/pron/fr/stylo.m4a',
+                'étoile':'/assets/pron/fr/etoile.m4a',
+                'élèves':'/assets/pron/fr/eleve.m4a',
+                'rose':'/assets/pron/fr/rose.m4a',
+        }
     def get_images(self) -> dict:
         return {
                 'fleur':'/assets/images/fleur.png',
