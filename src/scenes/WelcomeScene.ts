@@ -114,7 +114,7 @@ export class WelcomeScene extends Phaser.Scene {
     this.cameras.main.setBackgroundColor("#bfe8ff");
 
     this.add
-      .text(width / 2, 70, "Welcome!", {
+      .text(width / 2, 70, "Bine ați venit!", {
         fontFamily: "Arial",
         fontSize: "56px",
         color: "#0b2b46",
@@ -122,7 +122,7 @@ export class WelcomeScene extends Phaser.Scene {
       .setOrigin(0.5);
 
     const statusText = this.add
-      .text(width / 2, 140, "Loading sequences…", {
+      .text(width / 2, 140, "Se încarcă...", {
         fontFamily: "Arial",
         fontSize: "24px",
         color: "#0b2b46",
@@ -145,7 +145,7 @@ export class WelcomeScene extends Phaser.Scene {
       return;
     }
 
-    statusText.setText("Choose a sequence:");
+    statusText.setText("Alegeți o secvență:");
 
     const startY = 200;
     const spacing = 64;

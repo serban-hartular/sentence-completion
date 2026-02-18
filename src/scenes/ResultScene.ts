@@ -31,7 +31,7 @@ export class ResultScene extends Phaser.Scene {
 
     this.cameras.main.setBackgroundColor(done ? "#d9d9ff" : this.state.success ? "#c9f7d2" : "#ffd3d3");
 
-    const title = done ? "You're done! 🌟" : this.state.success ? "Well done! 🎉" : "Try again! 🙂";
+    const title = done ? "Ai terminat! 🌟" : this.state.success ? "Bravo! 🎉" : "Mai încearcă! 🙂";
     this.sound.play(done ? SFX.DONE : this.state.success ? SFX.SUCCESS : SFX.TRY_AGAIN, { volume: 0.3 });
 
     this.add

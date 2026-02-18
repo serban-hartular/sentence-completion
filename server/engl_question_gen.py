@@ -85,12 +85,13 @@ def _cap(s: str) -> str:
 
 
 class MakeQuestionSequence(QuestionSequenceFactory):
-    CLASS_NAME = 'Statement to Question'
+    CLASS_NAME = 'Statement to Q&A'
     RANDOM_TRY_LIMIT = 50
-    def __init__(self, num_q : int = 2) -> None:
+    def __init__(self, num_q : int = 5, split_words = True) -> None:
         self.num_q = num_q
         self.count = 0
         self.queue = []
+        self.split_words = split_words
     def get_next_question(self, previous_was_good : bool = True) -> dict|None:
         if previous_was_good:
             self.count += 1
@@ -104,9 +105,9 @@ class MakeQuestionSequence(QuestionSequenceFactory):
                 break
         else:
             return None
-        statement = generate_copulative_sentence(subj, npred, affirm=True, split_words=False, short_answer=False, question=False)
-        question = generate_copulative_sentence(subj, npred, affirm=True, split_words=False, short_answer=False, question=True)
-        short_answer = generate_copulative_sentence(subj, npred, affirm=False, split_words=False, short_answer=True, question=False)
+        statement = generate_copulative_sentence(subj, npred, affirm=True, split_words=self.split_words, short_answer=False, question=False)
+        question = generate_copulative_sentence(subj, npred, affirm=True, split_words=self.split_words, short_answer=False, question=True)
+        short_answer = generate_copulative_sentence(subj, npred, affirm=False, split_words=self.split_words, short_answer=True, question=False)
         short_answer[0] = _cap(short_answer[0])
 
         return QuestionData(prompt=f'{self.count}/{self.num_q} Form a question and a short negative answer from:\n "' + 

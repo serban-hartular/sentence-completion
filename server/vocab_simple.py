@@ -1,14 +1,16 @@
 
 from question import QuestionData, QuestionSequenceFactory
+import random
 
 class VocabSimple(QuestionSequenceFactory):
-    CLASS_NAME = 'VocabSimple'
+    CLASS_NAME = 'Vocabulaire Simple'
     SCREEN_KIND = 'vocab'
 
     def __init__(self) -> None:
         self.vocab = ['fleur', 'soleil', 'stylo', 'élèves', 'crayon', 'étoile', 'rose']
         self.fit = 3
         self.index = -self.fit
+        random.shuffle(self.vocab)
 
     def get_next_question(self, previous_was_good: bool = True) -> dict | None:
         if previous_was_good:

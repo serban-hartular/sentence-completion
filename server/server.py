@@ -19,7 +19,7 @@ from flask_cors import CORS
 CORS(
     app,
     supports_credentials=False, 
-    resources={r"/api/*": {"origins": ["http://46.62.200.84:5173", "http://localhost:5173"]}},
+    resources={r"/api/*": {"origins": ["http://46.62.200.84:5173", "http://localhost:5173", "http://capibara.hopto.org:5173"]}},
     allow_headers=["Content-Type", "X-Player-Id"],
     methods=["GET", "POST", "OPTIONS"],
 )
