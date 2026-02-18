@@ -1,37 +1,23 @@
+// src/scenes/SentenceScene.ts
 import Phaser from "phaser";
 import type { SentenceSceneData } from "../types/SentenceSceneData";
-import { WordCard, W_DELTA } from "../objects/WordCard";
+import { WordCard } from "../objects/WordCard";
 import { SentenceScreenLook } from "../ui/SentenceScreenLook";
-import { SFX } from "../audio/soundKeys";
 
-import { PronunciationRegistry } from "../audio/pronunciationRegistry";
+import { SlotScreen, type SlotSpec } from "../ui/slots/SlotScreen";
+import { TextArea } from "../ui/text/TextArea";
+import { SimpleRowSlotLayoutGenerator } from "../ui/layout/SimpleRowSlotLayoutGenerator";
+import { randomDistributePoints } from "../ui/layout/randomDistribute";
 
-
-type Slot = {
-  x: number;
-  y: number;
-  initialWord: string; // "" or initial word
-  occupant: WordCard | null; // card currently snapped here
-  outline: Phaser.GameObjects.Rectangle;
-};
-
-export class SentenceScene extends Phaser.Scene {
+export class SentenceScene extends SlotScreen {
   private dataIn!: SentenceSceneData;
   private look: SentenceScreenLook = new SentenceScreenLook();
-
-  private slots: Slot[] = [];
-  private cards: WordCard[] = [];
-
-  private readonly SNAP_RADIUS = 70;
-  private slotY = 0; // used to keep bottom cards below the LAST slot row
 
   constructor() {
     super("sentence");
   }
 
   init(data: SentenceSceneData & { look?: SentenceScreenLook }) {
-    console.log(this.cache.audio.getKeys());
-
     const { look, ...rest } = data as SentenceSceneData & { look?: SentenceScreenLook };
     this.look = look ?? new SentenceScreenLook();
 
@@ -44,149 +30,155 @@ export class SentenceScene extends Phaser.Scene {
   create() {
     const { width, height } = this.scale;
 
-    // Background + extra drawings (e.g., clouds)
     this.cameras.main.setBackgroundColor(this.look.backgroundColor);
     this.look.extraDrawings(this);
 
-    // ---- Slot layout supports newline markers ----
-    // dataIn.slots may contain "\n" entries to indicate a new row.
-    // We build rows of actual slots; "\n" is not a slot.
+    // Configure SlotScreen “remove if dragged into bottom”
+    this.configureSlotScreen({
+      bottomAreaThresholdY: Math.floor(height * 0.62),
+      snapRadius: 70,
+    });
+
+    // --- Parse rows from dataIn.slots (supports "\n") ---
     const rows: string[][] = [[]];
     for (const item of this.dataIn.slots) {
       if (item === "\n") {
-        // start a new row (avoid creating empty trailing rows if multiple newlines are provided)
         if (rows[rows.length - 1].length > 0) rows.push([]);
         continue;
       }
       rows[rows.length - 1].push(item);
     }
-    // If input ended with "\n", rows might end empty; remove it.
     if (rows.length > 1 && rows[rows.length - 1].length === 0) rows.pop();
 
-    const rowCount = rows.length;
+    const slotsPerRow = rows.map((r) => r.length);
 
-    // Move prompt higher if there is more than one row
-    const promptY = rowCount > 1 ? 22 : 36;
+    // --- Prompt via TextArea ---
+    const promptY = rows.length > 1 ? 12 : 22;
 
-
-    let prompt1 = this.dataIn.prompt;
-    let prompt2 = ""
-    if (this.dataIn.prompt.includes("\n")) {
-      [prompt1, prompt2] = this.dataIn.prompt.split("\n", 2)
-    }
-    if(prompt2 == "") {
-    // Prompt (top)
-      this.add.text(width / 2, promptY, this.dataIn.prompt, this.look.promptTextStyle).setOrigin(0.5);
-    } else {
-      this.add.text(width / 2, promptY-10, prompt1, this.look.promptTextStyle).setOrigin(0.5);
-      this.add.text(width / 2, promptY+30, prompt2, this.look.promptTextStyle).setOrigin(0.5);
-    }
-    // Slot row positions (center-ish)
-    // Preserve existing single-row positioning.
-    const slotSpacing = 170 - (W_DELTA/2); //170;
-    const rowSpacing = 95;
-
-    // Base Y matches previous single-row slotY.
-    const baseSlotY = Math.floor(height * 0.45);
-
-    // If multiple rows, shift the block slightly upward so it fits comfortably under the higher title.
-    // Keep overall feel similar; center the rows around ~baseSlotY.
-    const firstRowY =
-      rowCount === 1 ? baseSlotY : baseSlotY - Math.floor(((rowCount - 1) * rowSpacing) / 2) - 10;
-
-    // Build Slot objects in row-major order, matching original slot index semantics (excluding "\n")
-    this.slots = [];
-    let slotIndex = 0;
-
-    for (let r = 0; r < rowCount; r++) {
-      const row = rows[r];
-      const y = firstRowY + r * rowSpacing;
-
-      const totalW = (row.length - 1) * slotSpacing;
-      const startX = width / 2 - totalW / 2;
-
-      for (let c = 0; c < row.length; c++) {
-        const initialWord = row[c];
-        const x = startX + c * slotSpacing;
-
-        const outline = this.add
-          //.rectangle(x, y, 150, 70, 0xffffff, 0.25)
-          .rectangle(x, y, 150-W_DELTA, 70, 0xffffff, 0.25)
-          .setStrokeStyle(5, 0x2f7dd1, 1);
-        (outline as any).setRadius?.(18);
-
-        this.slots.push({ x, y, initialWord, occupant: null, outline });
-        slotIndex++;
+    new TextArea(
+      this,
+      { x: 30, y: promptY, w: width - 60, h: 100 },
+      this.dataIn.prompt,
+      {
+        style: this.look.promptTextStyle,
+        justify: "center",
+        backgroundColor: null,
       }
+    );
 
-      // keep slotY pointing at the LAST row so bottom cards always spawn below all rows
-      this.slotY = y;
+    // --- Slot layout generator ---
+    const slotGen = new SimpleRowSlotLayoutGenerator();
+
+    // slot area: keep similar “middle-ish” placement as before
+    const slotArea = {
+      x: 40,
+      y: Math.floor(height * 0.28),
+      w: width - 80,
+      h: Math.floor(height * 0.30),
+    };
+
+    const cardW = 110; // was 150-40 in your outline
+    const cardH = 70;
+
+    const layout = slotGen.generate({
+      slotsPerRow,
+      cardW,
+      cardH,
+      area: slotArea,
+      justify: [], // defaults to center
+      gapX: 20,
+      gapY: 25,
+    });
+
+    // If it doesn't fit, we still place them (so you can see the issue)
+    // but you could also fallback to smaller sizes here.
+    const slotCenters = layout.slots;
+
+    // --- Build SlotSpecs with callbacks + initial words ---
+    const specs: SlotSpec[] = [];
+    let flatIndex = 0;
+
+    for (let r = 0; r < rows.length; r++) {
+      for (let c = 0; c < rows[r].length; c++) {
+        const initialWord = rows[r][c];
+        const pos = slotCenters[flatIndex];
+
+        const slotIndexForCallback = flatIndex;
+
+        specs.push({
+          x: pos.x,
+          y: pos.y,
+          w: pos.w,
+          h: pos.h,
+          initialWord,
+          callbacks: {
+            // Example: first slot capitalizes display word
+            onPlace: (card) => {
+              if (slotIndexForCallback === 0) {
+                const s = card.word;
+                card.setDisplayWord(s.charAt(0).toUpperCase() + s.slice(1));
+              }
+            },
+            onRemove: (card) => {
+              if (slotIndexForCallback === 0) {
+                card.resetDisplayWord();
+              }
+            },
+          },
+        });
+
+        flatIndex++;
+      }
     }
 
-    // Create initial cards already in slots (same behavior as before)
+    this.buildSlots(specs);
+
+    // --- Create initial cards already in slots ---
     for (let i = 0; i < this.slots.length; i++) {
-      const w = this.slots[i].initialWord;
+      const w = (this.slots[i] as any).initialWord as string | undefined;
       if (!w) continue;
 
       const card = new WordCard(this, this.slots[i].x, this.slots[i].y, w, {
         draggable: this.dataIn.initialMovable ?? false,
       });
 
-      //card.currentSlotIndex = i;
-      card.setSlotIndex(i)
-
-      // Home is the slot position (top-left)
       card.homeX = card.x;
       card.homeY = card.y;
 
-      this.slots[i].occupant = card;
+      this.cards.push(card);
+      this.placeCardInSlot(card, i);
+    }
+
+    // --- Bank words distributed below last slot row ---
+    const bottomTop = Math.max(Math.floor(height * 0.65), this.lastSlotRowY + 120);
+
+    const area = { x: 110, y: bottomTop + 40, w: width - 220, h: height - (bottomTop + 120) };
+
+    const shuffled = Phaser.Utils.Array.Shuffle([...this.dataIn.bankWords]);
+
+    const pts = randomDistributePoints({
+      count: shuffled.length,
+      area,
+      minDist: 120,
+      maxTriesPerPoint: 40,
+    });
+
+    for (let i = 0; i < shuffled.length; i++) {
+      const p = pts.points[i] ?? {
+        x: Phaser.Math.Between(area.x, area.x + area.w),
+        y: Phaser.Math.Between(area.y, area.y + area.h),
+      };
+
+      const card = new WordCard(this, p.x, p.y, shuffled[i], { draggable: true });
+      card.homeX = card.x;
+      card.homeY = card.y;
       this.cards.push(card);
     }
 
-    // Bottom bank cards: randomly placed, but always below the slot rows
-    this.spawnBottomCards(this.dataIn.bankWords);
+    // --- Enable drag logic from SlotScreen ---
+    this.enableCardDragging();
 
-    // Drag handling (we drag the card's hit-rect, and move the container)
-    this.input.on("dragstart", (pointer: Phaser.Input.Pointer, go: any) => {
-      const card = (go as Phaser.GameObjects.GameObject).getData?.("card") as WordCard | undefined;
-      if (!card) return;
-
-      this.children.bringToTop(card);
-      card.setScale(1.06);
-
-      const wp = this.cameras.main.getWorldPoint(pointer.x, pointer.y);
-      (card as any).__dragOffX = card.centerX - wp.x;
-      (card as any).__dragOffY = card.centerY - wp.y;
-      this.sound.play(SFX.PICKUP, { volume: 0.3 });
-    });
-
-    this.input.on("drag", (pointer: Phaser.Input.Pointer, go: any) => {
-      const card = (go as Phaser.GameObjects.GameObject).getData?.("card") as WordCard | undefined;
-      if (!card) return;
-
-      const wp = this.cameras.main.getWorldPoint(pointer.x, pointer.y);
-      const offX = (card as any).__dragOffX ?? 0;
-      const offY = (card as any).__dragOffY ?? 0;
-
-      card.setCenter(wp.x + offX, wp.y + offY);
-    });
-
-    this.input.on("dragend", (_p: any, go: any) => {
-      const card = (go as Phaser.GameObjects.GameObject).getData?.("card") as WordCard | undefined;
-      if (!card) return;
-
-      card.setScale(1.0);
-
-      const bottomAreaThreshold = Math.floor(height * 0.62);
-      if (card.getSlotIndex() !== null && card.centerY > bottomAreaThreshold) {
-        this.removeFromSlot(card);
-        return;
-      }
-
-      this.trySnapOrSwap(card);
-    });
-
-    // Example “Check” button (unchanged)
+    // --- Check button unchanged ---
     const check = this.add
       .text(width - 110, height - 40, "Check ✅", {
         fontFamily: "Arial",
@@ -200,115 +192,14 @@ export class SentenceScene extends Phaser.Scene {
 
     check.on("pointerdown", () => {
       const ok = this.isCorrect();
-      const attempt = this.slots.map(s => s.occupant?.word ?? "");
+      const attempt = this.slots.map((s) => s.occupant?.word ?? "");
       this.scene.start("result", { success: ok, attempt });
-      //this.scene.start("result", { success: ok });
     });
-  }
-
-  private spawnBottomCards(words: string[]) {
-    const { width, height } = this.scale;
-
-    // Always below ALL rows (slotY is last row Y)
-    const bottomTop = Math.max(Math.floor(height * 0.65), this.slotY + 120);
-
-    const placed: { x: number; y: number }[] = [];
-    const minDist = 120;
-
-    for (const w of Phaser.Utils.Array.Shuffle([...words])) {
-      let x = 0,
-        y = 0;
-      let tries = 0;
-
-      do {
-        x = Phaser.Math.Between(110, width - 110);
-        y = Phaser.Math.Between(bottomTop + 40, height - 80);
-        if (y < this.slotY + 110) y = this.slotY + 110;
-        tries++;
-      } while (tries < 40 && placed.some((p) => Phaser.Math.Distance.Between(p.x, p.y, x, y) < minDist));
-
-      placed.push({ x, y });
-
-      const card = new WordCard(this, x, y, w, { draggable: true });
-      card.homeX = card.x;
-      card.homeY = card.y;
-      this.cards.push(card);
-    }
-  }
-
-  private removeFromSlot(card: WordCard) {
-    let card_index = card.getSlotIndex()
-    if (card_index === null) return;
-    const slot = this.slots[card_index];
-    if (slot.occupant === card) slot.occupant = null;
-    //card.currentSlotIndex = null;
-    card.setSlotIndex(null)
-  }
-
-  private trySnapOrSwap(card: WordCard) {
-    const prevIndex = card.getSlotIndex();
-
-    if (prevIndex !== null) {
-      const prev = this.slots[prevIndex];
-      if (prev.occupant === card) prev.occupant = null;
-      //card.currentSlotIndex = null;
-      card.setSlotIndex(null)
-    }
-
-    let bestIndex = -1;
-    let bestDist = Number.POSITIVE_INFINITY;
-
-    for (let i = 0; i < this.slots.length; i++) {
-      const s = this.slots[i];
-      const d = Phaser.Math.Distance.Between(card.centerX, card.centerY, s.x, s.y);
-      if (d < bestDist) {
-        bestDist = d;
-        bestIndex = i;
-      }
-    }
-
-    if (bestDist > this.SNAP_RADIUS) return;
-
-    const target = this.slots[bestIndex];
-
-    if (!target.occupant) {
-      card.snapToCenter(target.x, target.y);
-      this.sound.play(SFX.SNAP, { volume: 0.5 });
-      target.occupant = card;
-      //card.currentSlotIndex = bestIndex;
-      card.setSlotIndex(bestIndex)
-      return;
-    }
-
-    const other = target.occupant;
-
-    target.occupant = card;
-//    card.currentSlotIndex = bestIndex;
-    card.setSlotIndex(bestIndex)
-    card.snapToCenter(target.x, target.y);
-    this.sound.play(SFX.SNAP, { volume: 0.5 });
-
-    if (prevIndex !== null) {
-      const prevSlot = this.slots[prevIndex];
-      if (!prevSlot.occupant) {
-        prevSlot.occupant = other;
-        //other.currentSlotIndex = prevIndex;
-        other.setSlotIndex(prevIndex)
-        other.snapToCenter(prevSlot.x, prevSlot.y);
-        this.sound.play(SFX.SNAP, { volume: 0.5 });
-        return;
-      }
-    }
-
-    //other.currentSlotIndex = null;
-    other.setSlotIndex(null)
-    other.returnHome();
   }
 
   private isCorrect(): boolean {
     const current = this.slots.map((s) => s.occupant?.word ?? "");
     if (current.length !== this.dataIn.correct.length) return false;
-
     for (let i = 0; i < current.length; i++) {
       if (current[i] !== this.dataIn.correct[i]) return false;
     }
