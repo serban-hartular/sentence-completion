@@ -24,6 +24,9 @@ export class WordCard extends Phaser.GameObjects.Container {
 
   private displayWord: string;
 
+  /** True iff this card is intended to be draggable by the player. */
+  public isDraggable: boolean = false;
+
   constructor(
     scene: Phaser.Scene,
     centerX: number,
@@ -132,7 +135,9 @@ export class WordCard extends Phaser.GameObjects.Container {
   }
 
   enableDragging() {
+    this.isDraggable = true;
     this.scene.input.setDraggable(this.hit);
+
     this.hit.on("pointerover", () => this.setScale(1.03));
     this.hit.on("pointerout", () => this.setScale(1.0));
   }

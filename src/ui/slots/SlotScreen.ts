@@ -165,7 +165,11 @@ export class SlotScreen extends Phaser.Scene {
       }
     }
 
-    if (bestDist > this.snapRadius) return;
+    if (bestDist > this.snapRadius) {
+      // If card was dragged out of a slot and dropped nowhere, put it back.
+      if (prevIndex !== null) this.placeCardInSlot(card, prevIndex);
+      return;
+    }
 
     const target = this.slots[bestIndex];
 
@@ -175,10 +179,15 @@ export class SlotScreen extends Phaser.Scene {
       return;
     }
 
-    // Occupied: swap
+    // Occupied: if occupant is immovable/locked, reject the drop.
+    // If dragged from a slot, restore it to that slot; otherwise leave it where dropped.
     const other = target.occupant;
+    if (!other.isDraggable) {
+      if (prevIndex !== null) this.placeCardInSlot(card, prevIndex);
+      return;
+    }
 
-    // Put dragged card into target
+    // Occupied and movable: swap behavior
     this.placeCardInSlot(card, bestIndex);
 
     // Put the other card into previous slot if available, else return home
