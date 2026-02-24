@@ -1,7 +1,7 @@
 // src/ui/slots/SlotScreen.ts
 import Phaser from "phaser";
-import { WordCard } from "../../objects/WordCard";
-import { SFX } from "../../audio/soundKeys";
+import { WordCard } from "../objects/WordCard";
+import { SFX } from "../audio/soundKeys";
 
 export type SlotCallbacks = {
   onPlace?: (card: WordCard, slotIndex: number) => void;
@@ -34,7 +34,9 @@ export type SlotScreenConfig = {
   };
 };
 
-export class SlotScreen extends Phaser.Scene {
+import { CheckableExerciseScene } from "../ui/CheckableExerciseScene";
+
+export abstract class SlotScreen extends CheckableExerciseScene<any> {
   protected slots: SlotRuntime[] = [];
   protected cards: WordCard[] = [];
 

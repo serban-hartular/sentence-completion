@@ -85,7 +85,7 @@ export class ResultScene extends Phaser.Scene {
         }
 
         const kind: ScreenKind = (next.kind ?? this.state.kind ?? "sentence") as ScreenKind;
-        const sceneKey = kind === "vocab" ? "vocab" : "sentence";
+        const sceneKey = kind;
 
         this.scene.start(sceneKey, next.data);
       } catch {

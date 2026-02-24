@@ -10,6 +10,8 @@ from question import QuestionSequenceFactory, QuestionData
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 
+from intrus import EliminaIntrusul
+
 app = Flask(__name__)
 
 # Allow your Vite dev server to talk to Flask
@@ -30,7 +32,8 @@ from etre_avoir import EtreAvoir, Numeros
 from vocab_simple import VocabSimple
 from ro_timp_verb import RoVerbTenseQuestions
 
-SequenceFactories = [RoVerbTenseQuestions, MakeQuestionSequence, EtreAvoir, Numeros, VocabSimple]
+SequenceFactories = [RoVerbTenseQuestions, MakeQuestionSequence, EtreAvoir, Numeros, VocabSimple,
+                     EliminaIntrusul]
 
 @dataclasses.dataclass
 class PlayerState:

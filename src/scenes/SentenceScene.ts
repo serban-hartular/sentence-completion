@@ -4,7 +4,7 @@ import type { SentenceSceneData } from "../types/SentenceSceneData";
 import { WordCard } from "../objects/WordCard";
 import { SentenceScreenLook } from "../ui/SentenceScreenLook";
 
-import { SlotScreen, type SlotSpec } from "../ui/slots/SlotScreen";
+import { SlotScreen, type SlotSpec } from "../ui/SlotScreen";
 import { TextArea } from "../ui/text/TextArea";
 import { SimpleRowSlotLayoutGenerator } from "../ui/layout/SimpleRowSlotLayoutGenerator";
 import { randomDistributePoints } from "../ui/layout/randomDistribute";
@@ -178,30 +178,17 @@ export class SentenceScene extends SlotScreen {
     // --- Enable drag logic from SlotScreen ---
     this.enableCardDragging();
 
-    // --- Check button unchanged ---
-    const check = this.add
-      .text(width - 110, height - 40, "Check ✅", {
-        fontFamily: "Arial",
-        fontSize: "26px",
-        color: "#0b2b46",
-        backgroundColor: "#ffffff",
-        padding: { left: 14, right: 14, top: 8, bottom: 8 },
-      })
-      .setOrigin(0.5)
-      .setInteractive({ useHandCursor: true });
-
-    check.on("pointerdown", () => {
-      const ok = this.isCorrect();
-      const attempt = this.slots.map((s) => s.occupant?.word ?? "");
-      this.scene.start("result", { success: ok, attempt });
-    });
+    this.createCheckButton();
   }
 
-  private isCorrect(): boolean {
-    const current = this.slots.map((s) => s.occupant?.word ?? "");
-    if (current.length !== this.dataIn.correct.length) return false;
-    for (let i = 0; i < current.length; i++) {
-      if (current[i] !== this.dataIn.correct[i]) return false;
+  protected buildAttempt(): string[] {
+    return this.slots.map((s) => s.occupant?.word ?? "");
+  }
+
+  protected computeSuccess(attempt: string[]): boolean {
+    if (attempt.length !== this.dataIn.correct.length) return false;
+    for (let i = 0; i < attempt.length; i++) {
+      if (attempt[i] !== this.dataIn.correct[i]) return false;
     }
     return true;
   }
