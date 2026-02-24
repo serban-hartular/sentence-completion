@@ -3,6 +3,7 @@ from __future__ import annotations
 import dataclasses
 import json
 from collections import defaultdict
+from pathlib import Path
 from typing import Generator, Callable
 
 def xpos_tag_matches(xpos : str, other : str) -> int:
@@ -91,9 +92,13 @@ class Lexicon:
             json.dump(self.to_dict_list(), handle)
 
     @staticmethod
-    def from_json(filename : str) -> 'Lexicon':
-        with open(filename, 'r') as handle:
-            ll = json.load(handle)
+    def from_json(filename : str | Path) -> 'Lexicon':
+        if isinstance(filename, str):
+            with open(filename, 'r') as handle:
+                ll = json.load(handle)
+        else:
+            with filename.open('r') as handle:
+                ll = json.load(handle)
         return Lexicon([LexiconEntry(**e) for e in ll])
 
     @staticmethod

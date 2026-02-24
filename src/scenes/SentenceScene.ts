@@ -146,7 +146,7 @@ export class SentenceScene extends SlotScreen {
       card.homeY = card.y;
 
       this.cards.push(card);
-      this.placeCardInSlot(card, i);
+      this.placeCardInSlot(card, i, { playSfx: false });
     }
 
     // --- Bank words distributed below last slot row ---

@@ -129,7 +129,7 @@ export class WelcomeScene extends Phaser.Scene {
       })
       .setOrigin(0.5);
 
-    let sequences: { id: string; name: string; kind?: ScreenKind }[] = [];
+    let sequences: { id: string; name: string; kind?: ScreenKind; color?: string }[] = [];
 
     try {
       const res = await fetchSequences();
@@ -156,7 +156,7 @@ export class WelcomeScene extends Phaser.Scene {
           fontFamily: "Arial",
           fontSize: "34px",
           color: "#ffffff",
-          backgroundColor: "#2f7dd1",
+          backgroundColor: seq.color, //"#2f7dd1",
           padding: { left: 18, right: 18, top: 10, bottom: 10 },
         })
         .setOrigin(0.5)

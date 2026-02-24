@@ -3,8 +3,9 @@ from question import QuestionData, QuestionSequenceFactory
 import random
 
 class VocabSimple(QuestionSequenceFactory):
-    CLASS_NAME = 'Vocabulaire Simple'
+    CLASS_NAME = 'FR: Vocabulaire Simple'
     SCREEN_KIND = 'vocab'
+    COLOR = '#1111aa'
 
     def __init__(self) -> None:
         self.vocab = ['fleur', 'soleil', 'stylo', 'élèves', 'crayon', 'étoile', 'rose']

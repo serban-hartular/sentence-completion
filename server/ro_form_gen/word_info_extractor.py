@@ -1,14 +1,14 @@
 from __future__ import annotations
 
+from ro_form_gen import verbform_grammar
+from ro_form_gen.lexicon import Lexicon, LexiconFilterFn
+from ro_form_gen.verbform_grammar import Grammar
+
+from ro_form_gen.msd_format import MorphoDictionary
+from ro_form_gen import msd_format
+
 import conllu_path as cp
-from conllu_path.tree import NodeID
 
-import verbform_grammar
-from lexicon import Lexicon, LexiconFilterFn
-from verbform_grammar import Grammar
-
-from msd_format import MorphoDictionary
-import msd_format
 SYNTH_FORM = 'SynthForm'
 
 class WordMorphoInfoExtracter:
@@ -79,7 +79,7 @@ class WordMorphoInfoExtracter:
         dicts = [{'lemma': n.sdata('lemma')} | self.morpho_dict.features_from_tag(n.sdata('xpos'), self.bad_tag_dict) for n in functionals]
         return dicts, [n.uid() for n in functionals]
 
-from synthetic_form_generator import SyntheticFormGenerator, roFilterFnDict
+from ro_form_gen.synthetic_form_generator import SyntheticFormGenerator, roFilterFnDict
 
 
 class WordFormGenerator:

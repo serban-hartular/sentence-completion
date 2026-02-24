@@ -28,8 +28,9 @@ CORS(
 from engl_question_gen import MakeQuestionSequence
 from etre_avoir import EtreAvoir, Numeros
 from vocab_simple import VocabSimple
+from ro_timp_verb import RoVerbTenseQuestions
 
-SequenceFactories = [MakeQuestionSequence, EtreAvoir, Numeros, VocabSimple]
+SequenceFactories = [RoVerbTenseQuestions, MakeQuestionSequence, EtreAvoir, Numeros, VocabSimple]
 
 @dataclasses.dataclass
 class PlayerState:
@@ -78,7 +79,8 @@ def _cleanup_players() -> None:
 
 @app.get("/api/sequences")
 def api_sequences():
-    return jsonify( {"sequences": [{"id":n.CLASS_NAME, "name":n.CLASS_NAME, "kind":n.SCREEN_KIND} for n in SequenceFactories]})
+    return jsonify( {"sequences": [{"id":n.CLASS_NAME, "name":n.CLASS_NAME, "kind":n.SCREEN_KIND,
+                                    "color":n.COLOR} for n in SequenceFactories]})
 
 
 @app.post("/api/select")
@@ -141,7 +143,7 @@ def api_reset():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="localhost", port=5000, debug=False)
 
 
 

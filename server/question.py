@@ -15,6 +15,8 @@ class QuestionData:
 class QuestionSequenceFactory:
     CLASS_NAME = ''
     SCREEN_KIND = 'sentence'
+    COLOR = '#555555'
+
     def get_next_question(self, previous_was_good : bool = True) -> dict|None:
         pass
     def get_pronounciations(self) -> dict:

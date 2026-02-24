@@ -1,16 +1,20 @@
 from enum import Enum
 
-import msd_format
-import verbform_grammar
-from lexicon import Lexicon
-from synthetic_form_generator import roFilterFnDict
-from word_info_extractor import bad_tag_dict, WordMorphoInfoExtracter, WordFormGenerator, SYNTH_FORM
+from ro_form_gen import msd_format
+from ro_form_gen import verbform_grammar
+from ro_form_gen.lexicon import Lexicon
+from ro_form_gen.synthetic_form_generator import roFilterFnDict
+from ro_form_gen.word_info_extractor import bad_tag_dict, WordMorphoInfoExtracter, WordFormGenerator, SYNTH_FORM
 
 print('Loading libs')
 
+from pathlib import Path
+HERE = Path(__file__).resolve().parent
+LEXICON_PATH = HERE / "lexicons" / "reterom.v1.1.json"
+
 roVerbGrammar = verbform_grammar.generateRoVerbGrammar()
 roMorphoDict = msd_format.generate_roMorphoDictionary()
-lex = Lexicon.from_json('./lexicons/reterom.v1.1.json')
+lex = Lexicon.from_json(LEXICON_PATH)
 w_ex = WordMorphoInfoExtracter(roVerbGrammar, roMorphoDict, bad_tag_dict)
 w_gen = WordFormGenerator(lex, roMorphoDict, roVerbGrammar, roFilterFnDict)
 
@@ -24,6 +28,7 @@ class Person(Enum):
     P2 = '2'
     P3 = '3'
 class VerbTense(Enum):
+    PLUPERFECT = 'Pqp'
     PRESENT = 'Pres'
     PAST_PERF = 'PastPerfect'
     IMPERFECT = 'Imp'

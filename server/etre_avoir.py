@@ -1,7 +1,8 @@
 from question import QuestionData, QuestionSequenceFactory
 
 class EtreAvoir(QuestionSequenceFactory):
-    CLASS_NAME = 'Les verbes "être" et "avoir"'
+    CLASS_NAME = 'FR: Les verbes "être" et "avoir"'
+    COLOR = '#1111aa'
 
     questions = [QuestionData(
             prompt="Conjungă verbul 'être':",
@@ -27,12 +28,12 @@ class EtreAvoir(QuestionSequenceFactory):
     def __init__(self) -> None:
         self.count = -1
 
-    def get_next_question(self, previous_was_good: bool = True) -> QuestionData | None:
+    def get_next_question(self, previous_was_good: bool = True) -> dict | None:
         if previous_was_good:
             self.count += 1
         if self.count >= len(EtreAvoir.questions):
             return None
-        return EtreAvoir.questions[self.count] 
+        return EtreAvoir.questions[self.count].to_dict()
     
     def get_pronounciations(self) -> dict:
         return {
@@ -58,9 +59,11 @@ class EtreAvoir(QuestionSequenceFactory):
         }
     
 class Numeros(QuestionSequenceFactory):
-    CLASS_NAME = 'Les nombres de 1 à 12'
+    CLASS_NAME = 'FR: Les nombres de 1 à 12'
     NOMBRES = ['un', 'deux', 'trois', 'quatre', 'cinq', 'six', 'sept', 'huit', 'neuf',
              'dix', 'onze', 'douze']
+    COLOR = '#1111aa'
+
     questions = [
         QuestionData(
             prompt="Numerele de la 1 la 6 în franceză:",
@@ -81,9 +84,9 @@ class Numeros(QuestionSequenceFactory):
     def __init__(self) -> None:
         self.count = -1
 
-    def get_next_question(self, previous_was_good: bool = True) -> QuestionData | None:
+    def get_next_question(self, previous_was_good: bool = True) -> dict | None:
         if previous_was_good:
             self.count += 1
         if self.count >= len(Numeros.questions):
             return None
-        return Numeros.questions[self.count] 
+        return Numeros.questions[self.count].to_dict()

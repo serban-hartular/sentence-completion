@@ -85,7 +85,9 @@ def _cap(s: str) -> str:
 
 
 class MakeQuestionSequence(QuestionSequenceFactory):
-    CLASS_NAME = 'Statement to Q&A'
+    CLASS_NAME = 'EN: Statement to Q&A'
+    COLOR = '#aa1111'
+
     RANDOM_TRY_LIMIT = 50
     def __init__(self, num_q : int = 5, split_words = True) -> None:
         self.num_q = num_q

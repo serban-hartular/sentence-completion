@@ -4,7 +4,7 @@ import dataclasses
 from collections import defaultdict
 from typing import Dict, Iterable, ClassVar
 
-import msd_format
+from ro_form_gen import msd_format
 
 
 class Token(Dict[str, set[str]]):

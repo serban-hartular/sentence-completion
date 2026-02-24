@@ -7,7 +7,7 @@ console.log(API_BASE);
 
 export type ScreenKind = "sentence" | "vocab";
 
-export type SequenceInfo = { id: string; name: string; kind: ScreenKind };
+export type SequenceInfo = { id: string; name: string; kind: ScreenKind; color: string };
 export type SequencesResponse = { sequences: SequenceInfo[] };
 
 

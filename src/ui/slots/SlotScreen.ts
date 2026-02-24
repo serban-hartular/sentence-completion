@@ -205,15 +205,18 @@ export class SlotScreen extends Phaser.Scene {
     other.returnHome();
   }
 
-  protected placeCardInSlot(card: WordCard, slotIndex: number) {
+  protected placeCardInSlot(card: WordCard, slotIndex: number, opts: { playSfx?: boolean } = {}) {
+    const { playSfx = true } = opts;
     const slot = this.slots[slotIndex];
 
     slot.occupant = card;
     card.setSlotIndex(slotIndex);
     card.snapToCenter(slot.x, slot.y);
 
-    this.sound.play(SFX.SNAP, { volume: 0.5 });
-
+    if(playSfx) {
+      this.sound.play(SFX.SNAP, { volume: 0.5 });
+    }
+    
     slot.callbacks?.onPlace?.(card, slotIndex);
   }
 }

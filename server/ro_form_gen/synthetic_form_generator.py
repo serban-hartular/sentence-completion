@@ -2,11 +2,10 @@ from __future__ import annotations
 
 from typing import Callable
 
-import msd_format
-import verbform_grammar
-from lexicon import Lexicon, LexiconEntry, LexiconFilterFn
-from verbform_grammar import Token, Rule, Grammar
-from msd_format import MorphoDictionary
+from ro_form_gen import msd_format
+from ro_form_gen import verbform_grammar
+from ro_form_gen.lexicon import Lexicon, LexiconEntry, LexiconFilterFn
+from ro_form_gen.msd_format import MorphoDictionary
 
 AGREE_VALUE = list(verbform_grammar.Token.AGREE)[0]
 
