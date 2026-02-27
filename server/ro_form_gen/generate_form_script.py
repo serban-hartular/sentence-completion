@@ -6,17 +6,20 @@ from ro_form_gen.lexicon import Lexicon
 from ro_form_gen.synthetic_form_generator import roFilterFnDict
 from ro_form_gen.word_info_extractor import bad_tag_dict, WordMorphoInfoExtracter, WordFormGenerator, SYNTH_FORM
 
-print('Loading libs')
-
 from pathlib import Path
 HERE = Path(__file__).resolve().parent
-LEXICON_PATH = HERE / "lexicons" / "reterom.v1.1.json"
+LEXICON_PATH = HERE / "lexicons" / "reterom.v1.2.json"
 
-roVerbGrammar = verbform_grammar.generateRoVerbGrammar()
-roMorphoDict = msd_format.generate_roMorphoDictionary()
-lex = Lexicon.from_json(LEXICON_PATH)
-w_ex = WordMorphoInfoExtracter(roVerbGrammar, roMorphoDict, bad_tag_dict)
-w_gen = WordFormGenerator(lex, roMorphoDict, roVerbGrammar, roFilterFnDict)
+
+roVerbGrammar = roMorphoDict = lex = w_ex = w_gen = None
+def initialize():
+    print('Loading lexicon')
+    global roVerbGrammar, roMorphoDict, lex, w_ex, w_gen
+    roVerbGrammar = verbform_grammar.generateRoVerbGrammar()
+    roMorphoDict = msd_format.generate_roMorphoDictionary()
+    lex = Lexicon.from_json(LEXICON_PATH)
+    w_ex = WordMorphoInfoExtracter(roVerbGrammar, roMorphoDict, bad_tag_dict)
+    w_gen = WordFormGenerator(lex, roMorphoDict, roVerbGrammar, roFilterFnDict)
 
 
 class Number(Enum):
@@ -27,6 +30,7 @@ class Person(Enum):
     P1 = '1'
     P2 = '2'
     P3 = '3'
+
 class VerbTense(Enum):
     PLUPERFECT = 'Pqp'
     PRESENT = 'Pres'
@@ -56,3 +60,15 @@ def get_verb_form_indicative(lemma : str,
     return w_gen.generate_form(param_dict)
 
 
+def get_noun_form(  lemma : str,
+                    number : Number,
+                    definite : bool,
+                    case_dir : bool = True) -> str|None:
+    if isinstance(number, str):
+        number = Number(number)
+    tag = dict(category='N', Type='Common',
+                lemma=lemma, Number = number.value,
+                Definiteness='Yes' if definite else 'No',
+                Case='Dir' if case_dir else 'Obl')
+    forms = w_gen.generate_form(tag)
+    return forms[0] if forms else None

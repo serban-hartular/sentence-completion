@@ -45,11 +45,11 @@ export class MarkWordsScene extends CheckableExerciseScene<MarkWordsAttempt> {
     const W = this.scale.width;
     const H = this.scale.height;
 
-    const PROMPT_AREA = { x: 40, y: 30, w: W - 80, h: 140 };
+    const PROMPT_AREA = { x: 40, y: 60, w: W - 80, h: 140 };
 
     new TextArea(this, PROMPT_AREA, data.prompt, {
     style: { fontSize: 28 },
-    justify: "left",
+    justify: "center",
     });
 
     // Layout bounds for words (center + lower area)

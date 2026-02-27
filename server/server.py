@@ -31,9 +31,12 @@ from engl_question_gen import MakeQuestionSequence
 from etre_avoir import EtreAvoir, Numeros
 from vocab_simple import VocabSimple
 from ro_timp_verb import RoVerbTenseQuestions
+from ro_subst_articol import RoNounIntruder
 
-SequenceFactories = [RoVerbTenseQuestions, MakeQuestionSequence, EtreAvoir, Numeros, VocabSimple,
-                     EliminaIntrusul]
+SequenceFactories = [RoVerbTenseQuestions, RoNounIntruder,
+                     MakeQuestionSequence,
+                     Numeros, VocabSimple,
+]
 
 @dataclasses.dataclass
 class PlayerState:
