@@ -8,7 +8,8 @@ class VocabSimple(QuestionSequenceFactory):
     COLOR = '#1111aa'
 
     def __init__(self) -> None:
-        self.vocab = ['fleur', 'soleil', 'stylo', 'élèves', 'crayon', 'étoile', 'rose']
+        self.vocab = ['fleur', 'soleil', 'stylo', 'élèves',
+                      'crayon', 'étoile', 'rose', 'métro',]
         self.fit = 3
         self.index = -self.fit
         random.shuffle(self.vocab)
@@ -45,4 +46,5 @@ class VocabSimple(QuestionSequenceFactory):
                 'étoile':'/assets/images/etoile.png',
                 'élèves':'/assets/images/eleves.png',
                 'rose':'/assets/images/rose.png',
+                'métro': '/assets/images/metro.png',
         }
