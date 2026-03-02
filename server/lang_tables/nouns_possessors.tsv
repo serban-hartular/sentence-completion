@@ -1,0 +1,29 @@
+English	Class	Owner class	Romanian	Romanian2
+boy	human		băiat
+girl	human		fată
+pencil	object	human	creion
+house	object	human	casă
+question	abstract	human	întrebare
+answer	abstract	human	răspuns
+coat	object	human	haină
+teacher	human	human	profesoară	profesor
+student	human	human	elev
+chair	object	human	scaun
+desk	object	human	pupitru	birou
+brother	human	human	frate
+sister	human	human	soră
+father	human	human	tată
+mother	human	human	mamă
+cousin	human	human	văr	verișoară
+uncle	human	human	unchi
+aunt	human	human	mătușă
+tail	object	animal	coadă
+nose	object	human,animal	nas
+dog	animal	human	cățel
+cat	animal	human	pisică
+ear	object	human,animal	ureche
+bicycle	object	human	bicicletă
+John	human
+Kate	human
+Mary	human
+Bill	human
