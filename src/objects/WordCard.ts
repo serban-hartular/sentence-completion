@@ -6,6 +6,7 @@ export type WordCardOptions = {
   width?: number;
   height?: number;
   draggable?: boolean;
+  numCharsShrink? : number;
 };
 
 export class WordCard extends Phaser.GameObjects.Container {
@@ -15,6 +16,8 @@ export class WordCard extends Phaser.GameObjects.Container {
   homeY: number;
 
   private currentSlotIndex: number | null = null;
+
+  private numCharsShrink : number;
 
   readonly cardWidth: number;
   readonly cardHeight: number;
@@ -58,12 +61,14 @@ export class WordCard extends Phaser.GameObjects.Container {
       })
       .setOrigin(0.5);
 
+      this.numCharsShrink = opts.numCharsShrink ?? 6;
+
     this.add([this.hit, this.label]);
 
     this.homeX = this.x;
     this.homeY = this.y;
 
-    if (word.length > 6) {
+    if (word.length > this.numCharsShrink) {
       this.fitLongWordText(w);
     }
 
@@ -92,6 +97,7 @@ export class WordCard extends Phaser.GameObjects.Container {
   public setDisplayWord(text: string) {
     this.displayWord = text;
     this.label.setText(text);
+    
     if (text.length > 6) this.fitLongWordText(this.cardWidth);
     else {
       this.label.setScale(1);

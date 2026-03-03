@@ -139,7 +139,7 @@ export class VocabScene extends SlotScreen {
         y: Phaser.Math.Between(bankArea.y, bankArea.y + bankArea.h),
       };
 
-      const card = new WordCard(this, p.x, p.y, shuffled[i], { draggable: true });
+      const card = new WordCard(this, p.x, p.y, shuffled[i], { draggable: true, width:140, numCharsShrink:10 });
       card.homeX = card.x;
       card.homeY = card.y;
       this.cards.push(card);

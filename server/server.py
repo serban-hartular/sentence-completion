@@ -29,13 +29,13 @@ CORS(
 
 from engl_question_gen import MakeQuestionSequence
 from etre_avoir import EtreAvoir, Numeros
-from vocab_simple import VocabSimple
+from vocab_simple import VocabSimple, VocabSimpleEN
 from ro_timp_verb import RoVerbTenseQuestions
 from ro_subst_articol import RoNounIntruder, RoSortNouns
 
 SequenceFactories = [RoSortNouns, RoNounIntruder,
                      MakeQuestionSequence,
-                     Numeros, VocabSimple,
+                     Numeros, VocabSimple, VocabSimpleEN
 ]
 
 @dataclasses.dataclass
