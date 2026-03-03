@@ -28,11 +28,11 @@ class VocabSimpleEN(QuestionSequenceFactory):
     
     def get_pronounciations(self) -> dict:
         return {
-            w : f'/assets/pron/en/{w.replace(' ', '_')}.m4a' for w in self.vocab
+            w : f'/pron/en/{w.replace(' ', '_')}.m4a' for w in self.vocab
         }
     def get_images(self) -> dict:
         return {
-                w : f'/assets/images/en/{w.replace(' ', '_')}.png' for w in self.vocab
+                w : f'/images/en/{w.replace(' ', '_')}.png' for w in self.vocab
         }
 
 class VocabSimple(QuestionSequenceFactory):
@@ -62,22 +62,22 @@ class VocabSimple(QuestionSequenceFactory):
     
     def get_pronounciations(self) -> dict:
         return {
-                'fleur':'/assets/pron/fr/fleur.m4a',
-                'soleil':'/assets/pron/fr/soleil.m4a',
-                'crayon':'/assets/pron/fr/crayon.m4a',
-                'stylo':'/assets/pron/fr/stylo.m4a',
-                'étoile':'/assets/pron/fr/etoile.m4a',
-                'élèves':'/assets/pron/fr/eleve.m4a',
-                'rose':'/assets/pron/fr/rose.m4a',
+                'fleur':'/pron/fr/fleur.m4a',
+                'soleil':'/pron/fr/soleil.m4a',
+                'crayon':'/pron/fr/crayon.m4a',
+                'stylo':'/pron/fr/stylo.m4a',
+                'étoile':'/pron/fr/etoile.m4a',
+                'élèves':'/pron/fr/eleve.m4a',
+                'rose':'/pron/fr/rose.m4a',
         }
     def get_images(self) -> dict:
         return {
-                'fleur':'/assets/images/fleur.png',
-                'soleil':'/assets/images/soleil.png',
-                'crayon':'/assets/images/crayon.png',
-                'stylo':'/assets/images/stylo.png',
-                'étoile':'/assets/images/etoile.png',
-                'élèves':'/assets/images/eleves.png',
-                'rose':'/assets/images/rose.png',
-                'métro': '/assets/images/metro.png',
+                'fleur':'/images/fleur.png',
+                'soleil':'/images/soleil.png',
+                'crayon':'/images/crayon.png',
+                'stylo':'/images/stylo.png',
+                'étoile':'/images/etoile.png',
+                'élèves':'/images/eleves.png',
+                'rose':'/images/rose.png',
+                'métro': '/images/metro.png',
         }
