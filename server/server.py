@@ -34,8 +34,8 @@ from ro_timp_verb import RoVerbTenseQuestions
 from ro_subst_articol import RoNounIntruder, RoSortNouns
 
 SequenceFactories = [RoSortNouns, RoNounIntruder,
-                     MakeQuestionSequence,
-                     Numeros, VocabSimple, VocabSimpleEN
+                     MakeQuestionSequence,VocabSimpleEN,
+                     Numeros, VocabSimple, 
 ]
 
 @dataclasses.dataclass

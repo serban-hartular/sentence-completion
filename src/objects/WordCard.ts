@@ -122,12 +122,12 @@ export class WordCard extends Phaser.GameObjects.Container {
   }
 
   private fitLongWordText(cardWidth: number) {
-    const padding = 18;
+    const padding = 4;
     const maxW = cardWidth - padding * 2;
 
     const len = this.displayWord.length;
     const base = 28;
-    const reduced = Math.max(16, base - (len - 5) * 2);
+    const reduced = Math.max(16, base - (len - this.numCharsShrink) * 2);
     this.label.setFontSize(reduced);
 
     this.label.setScale(1);

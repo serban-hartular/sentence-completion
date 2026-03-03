@@ -3,7 +3,7 @@ from question import QuestionData, QuestionSequenceFactory
 import random
 
 class VocabSimpleEN(QuestionSequenceFactory):
-    CLASS_NAME = 'EN: Jobs'
+    CLASS_NAME = 'EN: Jobs Vocabulary'
     SCREEN_KIND = 'vocab'
     COLOR = '#aa1111'
 
