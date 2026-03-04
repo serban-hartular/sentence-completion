@@ -18,11 +18,11 @@ export class WelcomeScene extends Phaser.Scene {
 
   preload() {
     // Core SFX loaded up-front (unchanged)
-    this.load.audio(SFX.SNAP, "assets/sfx/snap.mp3");
-    this.load.audio(SFX.PICKUP, "assets/sfx/pickup.mp3");
-    this.load.audio(SFX.SUCCESS, "assets/sfx/success.mp3");
-    this.load.audio(SFX.TRY_AGAIN, "assets/sfx/try_again.mp3");
-    this.load.audio(SFX.DONE, "assets/sfx/success.mp3");
+    this.load.audio(SFX.SNAP, "/sfx/snap.mp3");
+    this.load.audio(SFX.PICKUP, "/sfx/pickup.mp3");
+    this.load.audio(SFX.SUCCESS, "/sfx/success.mp3");
+    this.load.audio(SFX.TRY_AGAIN, "/sfx/try_again.mp3");
+    this.load.audio(SFX.DONE, "/sfx/success.mp3");
   }
 
   /**
