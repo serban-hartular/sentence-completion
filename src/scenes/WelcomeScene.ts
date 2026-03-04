@@ -43,7 +43,7 @@ export class WelcomeScene extends Phaser.Scene {
       const key = url;                  // key identical to url
 
       if (!this.cache.audio.exists(key)) {
-        console.log("Loading audio", key);
+        //console.log("Loading audio", key);
         loader.audio(key, url);
         queuedAny = true;
       }
@@ -91,7 +91,7 @@ export class WelcomeScene extends Phaser.Scene {
           : value.key ?? url;
 
       if (!this.textures.exists(key)) {
-        console.log("Loading image", key);
+        //console.log("Loading image", key);
         loader.image(key, url);
         queuedAny = true;
       }
@@ -114,7 +114,7 @@ export class WelcomeScene extends Phaser.Scene {
     this.cameras.main.setBackgroundColor("#bfe8ff");
 
     this.add
-      .text(width / 2, 70, "Bine ați venit!", {
+      .text(width / 2, 50, "Bine ați venit!", {
         fontFamily: "Arial",
         fontSize: "56px",
         color: "#0b2b46",
@@ -122,7 +122,7 @@ export class WelcomeScene extends Phaser.Scene {
       .setOrigin(0.5);
 
     const statusText = this.add
-      .text(width / 2, 140, "Se încarcă...", {
+      .text(width / 2, 120, "Se încarcă...", {
         fontFamily: "Arial",
         fontSize: "24px",
         color: "#0b2b46",
@@ -147,7 +147,7 @@ export class WelcomeScene extends Phaser.Scene {
 
     statusText.setText("Alegeți o secvență:");
 
-    const startY = 200;
+    const startY = 170;
     const spacing = 64;
 
     sequences.forEach((seq, i) => {
