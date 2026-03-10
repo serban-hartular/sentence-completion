@@ -1,4 +1,4 @@
-from question import QuestionData, QuestionSequenceFactory
+from sequences import QuestionData, QuestionSequenceFactory
 
 class EtreAvoir(QuestionSequenceFactory):
     CLASS_NAME = 'FR: Les verbes "être" et "avoir"'

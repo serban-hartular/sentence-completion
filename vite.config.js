@@ -1,6 +1,8 @@
 // vite.config.js
 import { defineConfig } from 'vite'
 import dns from 'dns'
+import { resolve } from "path";
+
 dns.setDefaultResultOrder('verbatim')
 
 export default defineConfig({
@@ -16,6 +18,12 @@ export default defineConfig({
   },
   build: {
     outDir: '/var/www/language-game/dist',
-    emptyOutDir: true
-  }
+    emptyOutDir: true,
+    rollupOptions: {
+      input: {
+        root: resolve(__dirname, "index.html"),
+        app: resolve(__dirname, "app/index.html"),
+      },
+    },
+  },
 })

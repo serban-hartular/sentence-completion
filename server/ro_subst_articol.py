@@ -1,7 +1,7 @@
 import itertools
 import random
 
-from question import QuestionSequenceFactory, QuestionData
+from sequences import QuestionSequenceFactory, QuestionData
 import ro_form_gen
 from ro_form_gen import Number
 
@@ -18,10 +18,14 @@ class RoNounIntruder(QuestionSequenceFactory):
 
     lemmas = LEMMAS
 
-    def __init__(self, num_q : int = 5, num_choices = 4, singular = True):
-        self.num_q = num_q
+    def __init__(self, **kwargs):
+        kwargs = {'num_q' : 5, 'num_choices' : 4, 'singular' : True} | kwargs
+        try:
+            self.num_q = int(kwargs.get('num_q'))
+            self.num_choices, self.singular = int(kwargs.get('num_choices')), bool(kwargs.get('singular'))
+        except Exception as e:
+            raise e
         self.count = -1
-        self.num_choices, self.singular = num_choices, singular
         self.lemmas = list(RoNounIntruder.lemmas)
         self.lemma_index = 0
         random.shuffle(self.lemmas)

@@ -1,0 +1,46 @@
+:root {
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.card {
+  display: block;
+  padding: 18px 16px;
+  border-radius: 14px;
+  text-decoration: none;
+  color: inherit;
+  background: rgba(255,255,255,0.72);
+  border: 1px solid rgba(0,0,0,0.08);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+}
+
+.card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.10);
+}
+
+.muted { opacity: 0.75; }
+.error { color: #b00020; margin-top: 16px; }
+.back { display:inline-block; margin-bottom: 12px; text-decoration: none; }
+
+.theme-root { background: #f6f6f6; }
+.theme-en { background: #f5f7ff; }
+.theme-ro { background: #f5fff7; }
+.theme-fr { background: #fff5f7; }

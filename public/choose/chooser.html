@@ -1,24 +1,26 @@
 <!doctype html>
 <html lang="ro">
-<!-- /index.html -->
+<!-- /public/choose/chooser.html -->
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Alege limba</title>
+<title>Chooser</title>
 <link rel="stylesheet" href="/chooser.css" />
 </head>
-<body class="theme-root">
+<body>
 <main class="container">
-<h1 id="title">Alege limba</h1>
+<a id="back" class="back" href="/" style="display:none"></a>
+<h1 id="title">Alege</h1>
 <p id="subtitle" class="muted"></p>
 <div id="grid" class="grid"></div>
 <p id="error" class="error" style="display:none"></p>
 </main>
 
 <script>
+const params = new URLSearchParams(window.location.search);
 window.CHOOSER_CONFIG = {
 manifestUrl: "/choose/manifest.json",
-pageId: "root"
+pageId: params.get("page")
 };
 </script>
 

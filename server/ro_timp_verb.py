@@ -1,7 +1,7 @@
 import itertools
 import random
 
-from question import QuestionSequenceFactory, QuestionData
+from sequences import QuestionSequenceFactory, QuestionData
 import ro_form_gen
 
 class RoVerbTenseQuestions(QuestionSequenceFactory):

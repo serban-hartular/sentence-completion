@@ -5,12 +5,10 @@ import random
 import time
 import uuid
 from typing import Any, Dict, Optional, Tuple
-from question import QuestionSequenceFactory, QuestionData
+from sequences import QuestionSequenceFactory, QuestionData
 
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-
-from intrus import EliminaIntrusul
 
 app = Flask(__name__)
 
@@ -29,14 +27,17 @@ app = Flask(__name__)
 
 from engl_question_gen import MakeQuestionSequence
 from etre_avoir import EtreAvoir, Numeros
-from vocab_simple import VocabSimple, VocabSimpleEN
+from vocab_simple import VocabAnimalsEn, VocabSimple, VocabSimpleEN
 from ro_timp_verb import RoVerbTenseQuestions
 from ro_subst_articol import RoNounIntruder, RoSortNouns
 
-SequenceFactories = [RoSortNouns, RoNounIntruder,
-                     MakeQuestionSequence,VocabSimpleEN,
-                     Numeros, VocabSimple, 
+from sequences import SequenceFactoryRecord
+
+SequenceFactories = [SequenceFactoryRecord(*(C,)) for C in [RoSortNouns, RoNounIntruder,
+                     MakeQuestionSequence, VocabSimpleEN, VocabAnimalsEn,
+                     Numeros,  VocabSimple, RoVerbTenseQuestions, EtreAvoir]
 ]
+
 
 @dataclasses.dataclass
 class PlayerState:
@@ -83,10 +84,22 @@ def _cleanup_players() -> None:
 # Routes
 # ----------------------------
 
-@app.get("/api/sequences")
+# @app.get("/api/sequences")
+@app.post("/api/sequences")
 def api_sequences():
-    return jsonify( {"sequences": [{"id":n.CLASS_NAME, "name":n.CLASS_NAME, "kind":n.SCREEN_KIND,
-                                    "color":n.COLOR} for n in SequenceFactories]})
+    # print(', '.join([f'{k}: {request.headers.get(k)}' for k in ("X-App-Lang", "X-App-Unit")]))
+    body = request.get_json(silent=True) or {}
+    print(", ".join([f'{k}:{body[k]}' for k in body]))
+    # return jsonify( {"sequences": [{"id":n.CLASS_NAME, "name":n.CLASS_NAME, "kind":n.SCREEN_KIND,
+    #                                 "color":n.COLOR} for n in SequenceFactories]})
+
+    lang = body.get('lang')
+    if lang not in {'en', 'ro', 'fr'}:
+        return jsonify({"ok": False, "error": f"Unknown language {lang}"}), 400
+
+    return jsonify( {"sequences": [{"id":n.sequence_name, "name":n.sequence_name, "kind":n.screen_kind,
+                                    "color":n.color} for n in SequenceFactories
+                                    if n.sequence_name.startswith(lang.upper())]})
 
 
 @app.post("/api/select")
@@ -96,15 +109,15 @@ def api_select():
     body = request.get_json(force=True) or {}
     seq_id = body.get("sequenceId")
 
-    Factory = None
-    for C in SequenceFactories:
-        if C.CLASS_NAME == seq_id:
-            Factory = C
+    factory_rec = None
+    for rec in SequenceFactories:
+        if rec.sequence_name == seq_id:
+            factory_rec = rec
             break
     else:
         return jsonify({"ok": False, "error": "Unknown sequenceId"}), 400
 
-    PLAYERS[pid] = PlayerState(player_id=pid, seq_factory=Factory())
+    PLAYERS[pid] = PlayerState(player_id=pid, seq_factory=factory_rec.get_sequence_factory())
 
     # pronunciation manifest: word -> {key, url}
     pron = PLAYERS[pid].seq_factory.get_pronounciations()

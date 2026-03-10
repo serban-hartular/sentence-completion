@@ -1,0 +1,40 @@
+{
+  "pages": {
+    "root": {
+      "title": "Alege materia",
+      "theme": "root",
+      "items": [
+        {
+          "id": "en",
+          "title": "English",
+          "theme": "en",
+          "path": "/app/index.html",
+          "args": {
+            "lang": "en",
+            "unit": "1"
+          }
+        },
+        {
+          "id": "ro",
+          "title": "Română",
+          "theme": "ro",
+          "path": "/app/index.html",
+          "args": {
+            "lang": "ro",
+            "unit": "1"
+          }
+        },
+        {
+          "id": "fr",
+          "title": "Français",
+          "theme": "fr",
+          "path": "/app/index.html",
+          "args": {
+            "lang": "fr",
+            "unit": "1"
+          }
+        }
+      ]
+    }
+  }
+}

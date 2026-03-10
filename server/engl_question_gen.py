@@ -1,7 +1,7 @@
 from typing import TypedDict, Unpack
 import pandas as pd
 import random
-from question import QuestionData, QuestionSequenceFactory
+from sequences import QuestionData, QuestionSequenceFactory
 
 TO_BE = {1:{1:'am', 2:'are', 3:'is'},
          2:{1:'are', 2:'are', 3:'are'}}

@@ -1,0 +1,113 @@
+{
+  "pages": {
+    "root": {
+      "title": "Alege materia",
+      "theme": "root",
+      "items": [
+        {
+          "id": "en",
+          "title": "English",
+          "theme": "en",
+          "path": "/choose/chooser.html",
+          "args": {
+            "page": "units-en"
+          }
+        },
+        {
+          "id": "ro",
+          "title": "Română",
+          "theme": "ro",
+          "path": "/choose/chooser.html",
+          "args": {
+            "page": "units-ro"
+          }
+        },
+        {
+          "id": "fr",
+          "title": "Français",
+          "theme": "fr",
+          "path": "/choose/chooser.html",
+          "args": {
+            "page": "units-fr"
+          }
+        }
+      ]
+    },
+    "units-en": {
+      "title": "Units – English",
+      "subtitle": "Select a unit to start the game.",
+      "theme": "en",
+      "back": {
+        "title": "← Back",
+        "path": "/",
+        "args": {}
+      },
+      "items": [
+        {
+          "id": "u1",
+          "title": "Unit 1",
+          "theme": "en",
+          "path": "/app/index.html",
+          "args": {
+            "lang": "en",
+            "unit": "1"
+          }
+        },
+        {
+          "id": "u2",
+          "title": "Unit 2",
+          "theme": "en",
+          "path": "/app/index.html",
+          "args": {
+            "lang": "en",
+            "unit": "2"
+          }
+        }
+      ]
+    },
+    "units-ro": {
+      "title": "Unități – Română",
+      "subtitle": "Selectează o unitate pentru a porni jocul.",
+      "theme": "ro",
+      "back": {
+        "title": "← Înapoi",
+        "path": "/",
+        "args": {}
+      },
+      "items": [
+        {
+          "id": "u1",
+          "title": "Unitatea 1",
+          "theme": "ro",
+          "path": "/app/index.html",
+          "args": {
+            "lang": "ro",
+            "unit": "1"
+          }
+        }
+      ]
+    },
+    "units-fr": {
+      "title": "Unités – Français",
+      "subtitle": "Sélectionnez une unité pour démarrer le jeu.",
+      "theme": "fr",
+      "back": {
+        "title": "← Retour",
+        "path": "/",
+        "args": {}
+      },
+      "items": [
+        {
+          "id": "u1",
+          "title": "Unité 1",
+          "theme": "fr",
+          "path": "/app/index.html",
+          "args": {
+            "lang": "fr",
+            "unit": "1"
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,4 +1,5 @@
 import type { SentenceSceneData } from "../types/SentenceSceneData";
+import { APP_CONTEXT } from "./appContext";
 
 // const API_BASE = "http://46.62.200.84:5000" //"http://localhost:5000";
 //const API_BASE = `${window.location.protocol}//${window.location.hostname}:5000`;
@@ -67,9 +68,18 @@ function playerHeaders(): HeadersInit {
 
 export async function fetchSequences(): Promise<SequencesResponse> {
        console.log('Fetching..')
+       console.log(APP_CONTEXT)
   const res = await fetch(`${API_BASE}/api/sequences`, {
-    method: "GET",
-    headers: { "X-Player-Id": getTabPlayerId() },
+    method: "POST",
+    headers: {  "X-Player-Id": getTabPlayerId() ,
+       "Content-Type": "application/json",
+                // "X-App-Lang": APP_CONTEXT.lang,
+                // "X-App-Unit": APP_CONTEXT.unit ?? ""
+    },
+    body: JSON.stringify({
+      "lang": APP_CONTEXT.lang,
+      "unit": APP_CONTEXT.unit ?? ""
+    }),
   });
   console.log(res)
   if (!res.ok) throw new Error(`Server error: ${res.status}`);

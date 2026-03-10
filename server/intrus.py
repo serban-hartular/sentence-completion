@@ -1,4 +1,4 @@
-from question import QuestionData, QuestionSequenceFactory
+from sequences import QuestionData, QuestionSequenceFactory
 
 class EliminaIntrusul(QuestionSequenceFactory):
     CLASS_NAME='RO: Elimină intrusul'
