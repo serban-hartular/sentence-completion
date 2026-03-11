@@ -5,10 +5,11 @@ import { ResultScene } from "./scenes/ResultScene";
 import { VocabScene } from "./scenes/VocabScene";
 import { MarkWordsScene } from "./scenes/MarkWordsScene";
 import { CategorizeScene } from "./scenes/CategorizeScene";
+import { SortedListsScene } from "./scenes/SortedListsScene";
 
 const config: Phaser.Types.Core.GameConfig = {
   // ...
-  scene: [WelcomeScene, SentenceScene, VocabScene, ResultScene, MarkWordsScene, CategorizeScene],
+  scene: [WelcomeScene, SentenceScene, VocabScene, ResultScene, MarkWordsScene, CategorizeScene, SortedListsScene],
 };
 
 
@@ -19,7 +20,9 @@ export function startGame(parent: string | HTMLElement = "app") {
     width: 960,
     height: 540,
     backgroundColor: "#bfe8ff",
-    scene: [WelcomeScene, SentenceScene, ResultScene, VocabScene, MarkWordsScene, CategorizeScene],
+    scene: [WelcomeScene, SentenceScene, ResultScene, VocabScene, MarkWordsScene, CategorizeScene,
+      SortedListsScene
+    ],
     physics: { default: "arcade" },
     scale: {
       mode: Phaser.Scale.FIT,

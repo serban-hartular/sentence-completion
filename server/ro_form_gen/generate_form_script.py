@@ -1,4 +1,5 @@
 from enum import Enum
+import io
 
 from ro_form_gen import msd_format
 from ro_form_gen import verbform_grammar
@@ -16,16 +17,20 @@ roVerbGrammar = w_ex = w_gen = None
 roMorphoDict : MorphoDictionary = None
 lex : Lexicon = None
 
-def initialize():
+def initialize(lexicon_path : Path|str|None = None, force_reload : bool = False):
+    if lexicon_path is None:
+        lexicon_path = LEXICON_PATH
+    elif isinstance(lexicon_path, str):
+        lexicon_path = HERE / "lexicons" / lexicon_path
     global roVerbGrammar, roMorphoDict, lex, w_ex, w_gen
-    if not all([roVerbGrammar, roMorphoDict, lex, w_ex, w_gen]):
+    if not all([roVerbGrammar, roMorphoDict, lex, w_ex, w_gen]) or force_reload:
         print('Loading lexicon')
     if roVerbGrammar is None:
         roVerbGrammar = verbform_grammar.generateRoVerbGrammar()
     if roMorphoDict is None:
         roMorphoDict = msd_format.generate_roMorphoDictionary()
     if lex is None:
-        lex = Lexicon.from_json(LEXICON_PATH)
+        lex = Lexicon.from_json(lexicon_path)
     if w_ex is None:
         w_ex = WordMorphoInfoExtracter(roVerbGrammar, roMorphoDict, bad_tag_dict)
     if w_gen is None:

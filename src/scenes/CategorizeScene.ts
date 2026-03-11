@@ -18,11 +18,11 @@ export type CategorizeSceneData = {
 export type CategorizeAttempt = number[];
 
 export class CategorizeScene extends SlotScreen {
-  private dataIn!: CategorizeSceneData;
-  private slotToColumn: number[] = [];
+  protected dataIn!: CategorizeSceneData;
+  protected slotToColumn: number[] = [];
 
-  constructor() {
-    super("categorize");
+  constructor(sceneKey: string = "categorize") {
+    super(sceneKey);
   }
 
   init(data: CategorizeSceneData) {

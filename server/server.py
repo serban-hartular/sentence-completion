@@ -10,6 +10,8 @@ from sequences import QuestionSequenceFactory, QuestionData
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 
+from have_got import EnHaveGot
+
 app = Flask(__name__)
 
 # Allow your Vite dev server to talk to Flask
@@ -30,12 +32,14 @@ from etre_avoir import EtreAvoir, Numeros
 from vocab_simple import VocabAnimalsEn, VocabSimple, VocabSimpleEN
 from ro_timp_verb import RoVerbTenseQuestions
 from ro_subst_articol import RoNounIntruder, RoSortNouns
+from ro_subst_gen_nr import RoSortByGender
 
 from sequences import SequenceFactoryRecord
 
 SequenceFactories = [SequenceFactoryRecord(*(C,)) for C in [RoSortNouns, RoNounIntruder,
                      MakeQuestionSequence, VocabSimpleEN, VocabAnimalsEn,
-                     Numeros,  VocabSimple, RoVerbTenseQuestions, EtreAvoir]
+                     Numeros,  VocabSimple, RoVerbTenseQuestions, EtreAvoir, EnHaveGot,
+                     RoSortByGender]
 ]
 
 
