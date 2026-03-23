@@ -29,17 +29,18 @@ app = Flask(__name__)
 
 from engl_question_gen import MakeQuestionSequence
 from etre_avoir import EtreAvoir, Numeros
-from vocab_simple import VocabAnimalsEn, VocabSimple, VocabSimpleEN
+from vocab_simple import VocabAnimalsEn, VocabFurnitureEN, VocabSimple, VocabSimpleEN
 from ro_timp_verb import RoVerbTenseQuestions
-from ro_subst_articol import RoNounIntruder, RoSortNouns
+from ro_subst_articol import RoNounIntruder, RoSortNouns, RoSortFromText
 from ro_subst_gen_nr import RoSortByGender
 
 from sequences import SequenceFactoryRecord
 
-SequenceFactories = [SequenceFactoryRecord(*(C,)) for C in [RoSortNouns, RoNounIntruder,
+SequenceFactories = [SequenceFactoryRecord(*(C,)) for C in [RoSortNouns, RoNounIntruder, 
                      MakeQuestionSequence, VocabSimpleEN, VocabAnimalsEn,
-                     Numeros,  VocabSimple, RoVerbTenseQuestions, EtreAvoir, EnHaveGot,
-                     RoSortByGender]
+                     Numeros,  VocabSimple,  EtreAvoir, EnHaveGot,
+                     RoSortByGender, RoSortFromText,RoVerbTenseQuestions,
+                     VocabFurnitureEN,]
 ]
 
 

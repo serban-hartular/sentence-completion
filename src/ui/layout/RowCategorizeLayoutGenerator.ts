@@ -21,6 +21,7 @@ export class RowCategorizeLayoutGenerator {
     rowInnerGapY?: number; // gap from row header to row slots
     bankTopGap?: number;
     sidePaddingX?: number;
+    bankHeight?: number;
   }): RowCategorizeLayout {
     const {
       area,
@@ -35,6 +36,7 @@ export class RowCategorizeLayoutGenerator {
       rowInnerGapY = 0,
       bankTopGap = 28,
       sidePaddingX = 8,
+      bankHeight = 80,
     } = args;
 
     const rowCount = Math.min(headers.length, slotsPerRow.length);
@@ -48,7 +50,6 @@ export class RowCategorizeLayoutGenerator {
 
     const headerCenterX = contentLeft + headerW / 2;
     const slotsLeftX = contentLeft + headerW + headerGapX;
-    console.log(slotsLeftX)
     const slotsRightX = contentRight;
     const slotsAvailableW = Math.max(0, slotsRightX - slotsLeftX);
 
@@ -92,7 +93,7 @@ export class RowCategorizeLayoutGenerator {
       x: contentLeft,
       y: maxUsedBottom + bankTopGap,
       w: contentRight - contentLeft,
-      h: Math.max(80, area.y + area.h - (maxUsedBottom + bankTopGap)),
+      h: Math.max(bankHeight, area.y + area.h - (maxUsedBottom + bankTopGap)),
     };
 
     const widestRowW =
@@ -104,8 +105,8 @@ export class RowCategorizeLayoutGenerator {
 
     const neededH =
       rowCount > 0
-        ? rowCount * slotH + Math.max(0, rowCount - 1) * rowGapY + bankTopGap + 80
-        : bankTopGap + 80;
+        ? rowCount * slotH + Math.max(0, rowCount - 1) * rowGapY + bankTopGap + bankHeight
+        : bankTopGap + bankHeight;
 
     const fitsVertically = neededH <= area.h;
 

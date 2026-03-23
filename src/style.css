@@ -1,12 +1,23 @@
 html, body {
   height: 100%;
   margin: 0;
-  background: #ffffff; /*#bfe8ff;*/
+  background: #ffffff;
   font-family: Arial, sans-serif;
 }
-#app {
-  height: 100%;
+
+body {
+  display: grid;
+  place-items: center;
+  overflow: hidden;
 }
+/* 1280 × 720 */
+/* 1136 x 640 */
+#app {
+  width: min(100vw, 1136px);
+  aspect-ratio: 1136 / 640;
+  max-height: 640px;
+}
+
 canvas {
   display: block;
   margin: 0 auto;

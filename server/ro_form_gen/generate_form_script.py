@@ -82,15 +82,18 @@ def get_verb_form_indicative(lemma : str,
 def get_noun_form(  lemma : str,
                     number : Number,
                     definite : bool,
-                    case_dir : bool = True) -> str|None:
+                    case_dir : bool = True, **kwargs) -> str|None:
     if isinstance(number, str):
         number = Number(number)
+    with_tag = bool(kwargs.get('with_tag'))
     tag = dict(category='N', Type='Common',
                 lemma=lemma, Number = number.value,
                 Definiteness='Yes' if definite else 'No',
                 Case='Dir' if case_dir else 'Obl')
     forms = w_gen.generate_form(tag)
-    return forms[0] if forms else None
+    if not with_tag:
+        return forms[0] if forms else None
+    return (forms[0], tag) if forms else (None, None)
 
 def get_noun_info(form : str) -> list[dict]:
     if form not in lex.form_dict:

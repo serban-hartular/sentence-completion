@@ -1,0 +1,318 @@
+[
+  {
+    "text": [
+      "Într-", "o seară", ", ",
+      "o fată ", "a văzut ", "un film ", "captivant ", "la ", "televizor", ". ",
+      "Filmul ", "avea ", "personaje ", "curajoase ", "și ", "o poveste ", "emoționantă", ". ",
+      "Fata ", "a povestit ", "filmul ", "prietenei ", "sale ", "a doua zi", "."
+    ],
+    "substantive": {
+      "nearticulate": [
+        "televizor",
+        "personaje"
+      ],
+      "articulateNehotarat": [
+        "o seară",
+        "o fată",
+        "un film",
+        "o poveste"
+      ],
+      "articulateHotarat": [
+        "filmul",
+        "fata"
+      ]
+    }
+  },
+  {
+    "text": [
+      "Într-", "o vacanță", ", ",
+      "un băiat ", "a vizitat ", "o grădină ", "zoologică ", "din ", "oraș", ". ",
+      "Grădina ", "avea ", "animale ", "exotice ", "și ", "un spațiu ", "mare ", "pentru ", "ele", ". ",
+      "Băiatul ", "a făcut ", "poze ", "și ", "a admirat ", "animalele", "."
+    ],
+    "substantive": {
+      "nearticulate": [
+        "oraș",
+        "animale",
+        "poze"
+      ],
+      "articulateNehotarat": [
+        "o vacanță",
+        "un băiat",
+        "o grădină",
+        "un spațiu"
+      ],
+      "articulateHotarat": [
+        "grădina",
+        "băiatul",
+        "animalele"
+      ]
+    }
+  },
+  {
+    "text": [
+      "Într-", "o zi", ", ",
+      "un profesor ", "a explicat ", "o lecție ", "nouă ", "elevilor ", "din ", "clasă", ". ",
+      "Lecția ", "conținea ", "exemple ", "simple ", "și ", "un exercițiu ", "util", ". ",
+      "Profesorul ", "a scris ", "explicația ", "pe ", "tablă ", "și ", "a cerut ", "răspunsuri", "."
+    ],
+    "substantive": {
+      "nearticulate": [
+        "clasă",
+        "exemple",
+        "răspunsuri"
+      ],
+      "articulateNehotarat": [
+        "o zi",
+        "un profesor",
+        "o lecție",
+        "un exercițiu"
+      ],
+      "articulateHotarat": [
+        "lecția",
+        "profesorul",
+        "explicația"
+      ]
+    }
+  },
+  {
+    "text": [
+      "Pe ", "masă", ", ",
+      "un copil ", "a găsit ", "o cutie ", "mică", ". ",
+      "Cutia ", "avea ", "un capac ", "roșu ", "și ", "o formă ", "ciudată", ". ",
+      "Copilul ", "a deschis ", "cutia ", "și ", "a privit ", "obiectele ", "din ", "interior", "."
+    ],
+    "substantive": {
+      "nearticulate": [
+        "masă",
+        "obiecte",
+        "interior"
+      ],
+      "articulateNehotarat": [
+        "un copil",
+        "o cutie",
+        "un capac",
+        "o formă"
+      ],
+      "articulateHotarat": [
+        "cutia",
+        "copilul"
+      ]
+    }
+  },
+  {
+    "text": [
+      "La ", "școală", ", ",
+      "o elevă ", "a primit ", "un test ", "ușor ", "la ", "matematică", ". ",
+      "Testul ", "avea ", "exerciții ", "simple ", "și ", "un desen ", "clar", ". ",
+      "Eleva ", "a rezolvat ", "testul ", "și ", "a verificat ", "răspunsurile", "."
+    ],
+    "substantive": {
+      "nearticulate": [
+        "școală",
+        "matematică",
+        "exerciții",
+        "răspunsuri"
+      ],
+      "articulateNehotarat": [
+        "o elevă",
+        "un test",
+        "un desen"
+      ],
+      "articulateHotarat": [
+        "testul",
+        "eleva"
+      ]
+    }
+  },
+  {
+    "text": [
+      "În ", "parc", ", ",
+      "un băiat ", "a văzut ", "o pasăre ", "colorată ", "pe ", "o bancă", ". ",
+      "Pasărea ", "avea ", "pene ", "strălucitoare ", "și ", "un sunet ", "plăcut", ". ",
+      "Băiatul ", "a urmărit ", "pasărea ", "și ", "a ascultat ", "cântecul", "."
+    ],
+    "substantive": {
+      "nearticulate": [
+        "parc",
+        "pene",
+        "cântec"
+      ],
+      "articulateNehotarat": [
+        "un băiat",
+        "o pasăre",
+        "o bancă",
+        "un sunet"
+      ],
+      "articulateHotarat": [
+        "pasărea",
+        "băiatul"
+      ]
+    }
+  },
+  {
+    "text": [
+      "Pe ", "drum", ", ",
+      "o femeie ", "a cumpărat ", "o pâine ", "caldă ", "de la ", "magazin", ". ",
+      "Pâinea ", "avea ", "o crustă ", "crocantă ", "și ", "un miros ", "bun", ". ",
+      "Femeia ", "a dus ", "pâinea ", "acasă", " și ", "a pus-", "o ", "pe ", "masă", "."
+    ],
+    "substantive": {
+      "nearticulate": [
+        "drum",
+        "magazin",
+        "masă"
+      ],
+      "articulateNehotarat": [
+        "o femeie",
+        "o pâine",
+        "o crustă",
+        "un miros"
+      ],
+      "articulateHotarat": [
+        "pâinea",
+        "femeia"
+      ]
+    }
+  },
+  {
+    "text": [
+      "În ", "clasă", ", ",
+      "un profesor ", "a spus ", "o poveste ", "scurtă ", "despre ", "un oraș ", "vechi", ". ",
+      "Povestea ", "avea ", "personaje ", "interesante ", "și ", "un final ", "surprinzător", ". ",
+      "Profesorul ", "a repetat ", "povestea ", "și ", "a explicat ", "mesajul", "."
+    ],
+    "substantive": {
+      "nearticulate": [
+        "clasă",
+        "personaje"
+      ],
+      "articulateNehotarat": [
+        "un profesor",
+        "o poveste",
+        "un oraș",
+        "un final"
+      ],
+      "articulateHotarat": [
+        "povestea",
+        "profesorul",
+        "mesajul"
+      ]
+    }
+  },
+  {
+    "text": [
+      "Un copil ", "curios ", "a descoperit ", "o hartă ", "veche ", "într-", "un sertar", ". ",
+      "Harta ", "arăta ", "drumuri ", "ascunse ", "și ", "un traseu ", "misterios", ". ",
+      "Copilul ", "a urmărit ", "traseul ", "și ", "a găsit ", "comoara", "."
+    ],
+    "substantive": {
+      "nearticulate": [
+        "drumuri",
+        "comoară"
+      ],
+      "articulateNehotarat": [
+        "un copil",
+        "o hartă",
+        "un sertar",
+        "un traseu"
+      ],
+      "articulateHotarat": [
+        "harta",
+        "copilul",
+        "traseul"
+      ]
+    }
+  },
+  {
+    "text": [
+      "O elevă ", "silitoare ", "a pregătit ", "un proiect ", "interesant ", "pentru ", "concurs", ". ",
+      "Proiectul ", "includea ", "imagini ", "colorate ", "și ", "o explicație ", "clară", ". ",
+      "Eleva ", "a prezentat ", "proiectul ", "și ", "a primit ", "premiul", "."
+    ],
+    "substantive": {
+      "nearticulate": [
+        "concurs",
+        "imagini"
+      ],
+      "articulateNehotarat": [
+        "o elevă",
+        "un proiect",
+        "o explicație"
+      ],
+      "articulateHotarat": [
+        "proiectul",
+        "eleva",
+        "premiul"
+      ]
+    }
+  },
+  {
+    "text": [
+      "Un băiat ", "atent ", "a construit ", "o machetă ", "frumoasă ", "pentru ", "lecție", ". ",
+      "Macheta ", "avea ", "detalii ", "mici ", "și ", "un design ", "original", ". ",
+      "Băiatul ", "a arătat ", "macheta ", "și ", "a explicat ", "modelul", "."
+    ],
+    "substantive": {
+      "nearticulate": [
+        "lecție",
+        "detalii"
+      ],
+      "articulateNehotarat": [
+        "un băiat",
+        "o machetă",
+        "un design"
+      ],
+      "articulateHotarat": [
+        "macheta",
+        "băiatul",
+        "modelul"
+      ]
+    }
+  },
+  {
+    "text": [
+      "O femeie ", "harnică ", "a pregătit ", "o prăjitură ", "gustoasă ", "pentru ", "familie", ". ",
+      "Prăjitura ", "avea ", "ingrediente ", "simple ", "și ", "un gust ", "plăcut", ". ",
+      "Femeia ", "a împărțit ", "prăjitura ", "și ", "a oferit ", "porțiile", "."
+    ],
+    "substantive": {
+      "nearticulate": [
+        "familie",
+        "ingrediente",
+        "porții"
+      ],
+      "articulateNehotarat": [
+        "o femeie",
+        "o prăjitură",
+        "un gust"
+      ],
+      "articulateHotarat": [
+        "prăjitura",
+        "femeia"
+      ]
+    }
+  },
+  {
+    "text": [
+      "Un profesor ", "răbdător ", "a explicat ", "o regulă ", "nouă ", "elevilor", ". ",
+      "Regula ", "conținea ", "exemple ", "utile ", "și ", "un caz ", "special", ". ",
+      "Profesorul ", "a repetat ", "regula ", "și ", "a verificat ", "exercițiile", "."
+    ],
+    "substantive": {
+      "nearticulate": [
+        "exemple",
+        "exerciții"
+      ],
+      "articulateNehotarat": [
+        "un profesor",
+        "o regulă",
+        "un caz"
+      ],
+      "articulateHotarat": [
+        "regula",
+        "profesorul"
+      ]
+    }
+  }
+]

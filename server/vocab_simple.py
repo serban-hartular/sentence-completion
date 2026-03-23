@@ -16,12 +16,14 @@ ANIMALS_EN = ['turtle', 'budgie', 'dog', 'guinea pig', 'horse', 'mouse', 'parrot
 ANIMALS_EN_VOCAB = [VocabEntry(word=w, image=f'/images/en/animals/{w.replace(' ', '_')}.png',
                                pron=f'/pron/en/{w.replace(' ', '_')}.m4a') for w in ANIMALS_EN]
 
+
 class VocabAnimalsEn(QuestionSequenceFactory):
     CLASS_NAME = 'EN: Animals Vocabulary'
     SCREEN_KIND = 'vocab'
     COLOR = '#aa1111'
 
     def __init__(self, **kwargs) -> None:
+        print('kwargs = ',  kwargs.get('vocab'))
         self.vocab : list[VocabEntry] = kwargs.get('vocab') if kwargs.get('vocab') else ANIMALS_EN_VOCAB
         self.fit = 3
         self.index = -self.fit
@@ -51,6 +53,23 @@ class VocabAnimalsEn(QuestionSequenceFactory):
         return self.pron
     def get_images(self) -> dict:
         return self.images
+
+FURNITURE_EN = ['bed', 'cupboard', 'fridge', 'mirror', 'sofa', 'cooker',
+                'curtain', 'lamp', 'rug', 'wardrobe']
+
+FURNITURE_EN_VOCAB = [VocabEntry(word=w,
+                        image=f'/images/en/furniture/{w.replace(' ', '_')}.jpeg',
+                        pron=f'/pron/en/{w.replace(' ', '_')}.m4a')
+                            for w in FURNITURE_EN]
+
+
+class VocabFurnitureEN(VocabAnimalsEn):
+    CLASS_NAME = 'EN: Furniture Vocabulary'
+
+    def __init__(self):
+        super().__init__(vocab=FURNITURE_EN_VOCAB)
+        print(self.vocab)
+
 
 class VocabSimpleEN(QuestionSequenceFactory):
     CLASS_NAME = 'EN: Jobs Vocabulary'
