@@ -35,7 +35,8 @@ class EnHaveGot(QuestionSequenceFactory):
             subj = row['Subject']
             obj = random.choice(row['Objects'])
             have = row['Verb']
-            if (subj, obj) not in self.queue:
+            correct = subj.split() + [have, 'got'] + obj.split() + ["."]
+            if (subj, obj) not in self.queue and len(correct)<= 7: # otherwise too long for screen
                 self.queue.append((subj, obj))
                 break
         else:
