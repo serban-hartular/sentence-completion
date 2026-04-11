@@ -2,7 +2,14 @@ import Phaser from "phaser";
 import { fetchNextSentence } from "../api/sentenceApi";
 import { SFX } from "../audio/soundKeys";
 
-type ScreenKind = "sentence" | "vocab";
+type ScreenKind =
+  | "sentence"
+  | "vocab"
+  | "mark_words"
+  | "categorize"
+  | "sorted-lists"
+  | "sort-from-text"
+  | "underline-from-text";
 
 type ResultData = {
   success: boolean;

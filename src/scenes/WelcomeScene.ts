@@ -9,7 +9,14 @@ import { setPronunciations } from "../audio/pronunciationRegistry";
 import { setImages } from "../images/imageRegistry";
 import { SFX } from "../audio/soundKeys";
 
-type ScreenKind = "sentence" | "vocab";
+type ScreenKind =
+  | "sentence"
+  | "vocab"
+  | "mark_words"
+  | "categorize"
+  | "sorted-lists"
+  | "sort-from-text"
+  | "underline-from-text";
 
 export class WelcomeScene extends Phaser.Scene {
   constructor() {
