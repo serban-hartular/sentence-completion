@@ -240,24 +240,28 @@ export class InteractiveTextArea extends Phaser.GameObjects.Container {
     chunk: PlainTextChunk | GrabbableTextChunk,
     index: number
   ): ChunkRenderResult {
-    const txt = this.scene.add.text(
-      0,
-      0,
-      (chunk.text ?? "").replace(/\t/g, "    "),
-      this.style
-    );
+    const txt = this.scene.add
+      .text(0, 0, (chunk.text ?? "").replace(/\t/g, "    "), this.style)
+      .setOrigin(0, 0);
 
-    txt.setOrigin(0, 0);
-
-    if (chunk.kind === "grabbable") {
-      txt.setInteractive({ useHandCursor: true });
-      txt.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
-        this.emitChunkPointerDown(chunk, index, pointer, txt);
-      });
+    if (chunk.kind !== "grabbable") {
+      return {
+        object: txt,
+        width: txt.width,
+        height: txt.height,
+      };
     }
 
+    const container = this.scene.add.container(0, 0, [txt]);
+    const hitZone = this.createHitZone(txt.width, txt.height);
+    container.add(hitZone);
+
+    hitZone.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
+      this.emitChunkPointerDown(chunk, index, pointer, container);
+    });
+
     return {
-      object: txt,
+      object: container,
       width: txt.width,
       height: txt.height,
     };
@@ -283,13 +287,10 @@ export class InteractiveTextArea extends Phaser.GameObjects.Container {
     bgGfx.fillRoundedRect(-pad / 2, -pad / 2, width + pad, height + pad, radius);
 
     container.add([bgGfx, markGfx, textObj]);
-    container.setSize(width, height);
-    container.setInteractive(
-      new Phaser.Geom.Rectangle(0, 0, width, height),
-      Phaser.Geom.Rectangle.Contains
-    );
+    const hitZone = this.createHitZone(width, height);
+    container.add(hitZone);
 
-    container.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
+    hitZone.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
       this.emitChunkPointerDown(chunk, index, pointer, container);
     });
 
@@ -332,13 +333,10 @@ export class InteractiveTextArea extends Phaser.GameObjects.Container {
     textObj.y = Math.max(0, (height - textObj.height) / 2);
 
     container.add([box, textObj]);
-    container.setSize(width, height);
-    container.setInteractive(
-      new Phaser.Geom.Rectangle(0, 0, width, height),
-      Phaser.Geom.Rectangle.Contains
-    );
+    const hitZone = this.createHitZone(width, height);
+    container.add(hitZone);
 
-    container.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
+    hitZone.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
       this.emitChunkPointerDown(chunk, index, pointer, container);
     });
 
@@ -409,6 +407,13 @@ export class InteractiveTextArea extends Phaser.GameObjects.Container {
     const sy = ry / r;
     gfx.setScale(sx, sy);
     gfx.setPosition((1 - sx) * cx, (1 - sy) * cy);
+  }
+
+  private createHitZone(width: number, height: number): Phaser.GameObjects.Zone {
+    return this.scene.add
+      .zone(width / 2, height / 2, width, height)
+      .setOrigin(0.5)
+      .setInteractive({ useHandCursor: true });
   }
 
   private estimateLineHeight(style: Phaser.Types.GameObjects.Text.TextStyle): number {
