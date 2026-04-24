@@ -81,6 +81,8 @@ export type MemorySequenceSceneData = {
   items: MemorySequenceItemInput[];
   cardSize?: number;
   studyButtonLabel?: string;
+  reshuffleDelaySeconds?: number;
+  waitingMessage?: string;
 };
 
 export type ScreenDataByKind = {

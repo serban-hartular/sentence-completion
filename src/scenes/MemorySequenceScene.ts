@@ -10,13 +10,15 @@ import type {
   MemorySequenceSceneData,
 } from "../types/screenData";
 
-type ScenePhase = "study" | "play";
+type ScenePhase = "study" | "waiting" | "play";
 
 export class MemorySequenceScene extends SlotScreen<ImageCard> {
   private dataIn!: MemorySequenceSceneData;
   private normalizedItems: MemorySequenceItem[] = [];
   private phase: ScenePhase = "study";
   private studyButton?: Phaser.GameObjects.Text;
+  private waitingText?: Phaser.GameObjects.Text;
+  private revealTimer?: Phaser.Time.TimerEvent;
 
   constructor() {
     super("memory-sequence");
@@ -25,6 +27,9 @@ export class MemorySequenceScene extends SlotScreen<ImageCard> {
   init(data: MemorySequenceSceneData) {
     this.phase = "study";
     this.studyButton = undefined;
+    this.waitingText = undefined;
+    this.revealTimer?.remove(false);
+    this.revealTimer = undefined;
     this.cards = [];
     this.dataIn = data;
     this.normalizedItems = data.items.map((item, index) =>
@@ -161,9 +166,7 @@ export class MemorySequenceScene extends SlotScreen<ImageCard> {
   }
 
   private startPlayPhase() {
-    const { width, height } = this.scale;
-
-    this.phase = "play";
+    this.phase = "waiting";
     this.studyButton?.destroy();
     this.studyButton = undefined;
 
@@ -174,6 +177,27 @@ export class MemorySequenceScene extends SlotScreen<ImageCard> {
       slot.occupant.clearSlotState();
       slot.occupant = null;
     }
+
+    for (const card of this.cards) {
+      card.setVisible(false);
+    }
+
+    this.showWaitingMessage();
+    this.refreshCheckEnabled();
+
+    const delayMs = this.resolveReshuffleDelayMs();
+    this.revealTimer = this.time.delayedCall(delayMs, () => {
+      this.revealTimer = undefined;
+      this.showCardsInRandomBankPositions();
+    });
+  }
+
+  private showCardsInRandomBankPositions() {
+    const { width, height } = this.scale;
+
+    this.phase = "play";
+    this.waitingText?.destroy();
+    this.waitingText = undefined;
 
     const bankTop = Math.max(Math.floor(height * 0.72), this.lastSlotRowY + 110);
     const bankArea = {
@@ -201,11 +225,33 @@ export class MemorySequenceScene extends SlotScreen<ImageCard> {
 
       card.homeX = point.x - card.cardWidth / 2;
       card.homeY = point.y - card.cardHeight / 2;
+      card.setVisible(true);
       card.enableDragging();
       card.snapToCenter(point.x, point.y);
     }
 
     this.refreshCheckEnabled();
+  }
+
+  private showWaitingMessage() {
+    if (!this.dataIn.waitingMessage) return;
+
+    const { width, height } = this.scale;
+    this.waitingText?.destroy();
+    this.waitingText = this.add
+      .text(width / 2, height * 0.56, this.dataIn.waitingMessage, {
+        fontFamily: "Arial",
+        fontSize: "28px",
+        color: "#0b2b46",
+        align: "center",
+        wordWrap: { width: width - 120 },
+      })
+      .setOrigin(0.5);
+  }
+
+  private resolveReshuffleDelayMs(): number {
+    const seconds = this.dataIn.reshuffleDelaySeconds ?? 2;
+    return Math.max(0, seconds * 1000);
   }
 
   private resolveCardSize(itemCount: number, sceneWidth: number): number {
