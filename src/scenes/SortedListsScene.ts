@@ -4,11 +4,9 @@ import { type SlotSpec } from "../ui/SlotScreen";
 import { TextArea } from "../ui/text/TextArea";
 import { WordCard } from "../objects/WordCard";
 import { randomDistributePoints } from "../ui/layout/randomDistribute";
-import {
-  CategorizeScene,
-  type CategorizeSceneData,
-} from "./CategorizeScene";
+import { CategorizeScene } from "./CategorizeScene";
 import { RowCategorizeLayoutGenerator } from "../ui/layout/RowCategorizeLayoutGenerator";
+import type { CategorizeSceneData } from "../types/screenData";
 
 export class SortedListsScene extends CategorizeScene {
   protected declare dataIn: CategorizeSceneData;
@@ -76,7 +74,7 @@ export class SortedListsScene extends CategorizeScene {
         .setOrigin(0.5);
     }
 
-    const slotSpecs: SlotSpec[] = layout.slots.map((s) => ({
+    const slotSpecs: SlotSpec<WordCard>[] = layout.slots.map((s) => ({
       x: s.x,
       y: s.y,
       w: s.w,
@@ -129,9 +127,5 @@ export class SortedListsScene extends CategorizeScene {
         })
         .setOrigin(0.5);
     }
-  }
-
-  protected override getResultPayloadExtras(): Record<string, unknown> {
-    return { kind: "sorted-lists" };
   }
 }

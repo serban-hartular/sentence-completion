@@ -1,24 +1,13 @@
 import Phaser from "phaser";
 import { fetchNextSentence } from "../api/sentenceApi";
 import { SFX } from "../audio/soundKeys";
-
-type ScreenKind =
-  | "sentence"
-  | "vocab"
-  | "mark_words"
-  | "categorize"
-  | "sorted-lists"
-  | "sort-from-text"
-  | "underline-from-text";
+import { startNextScreen } from "./screenFlow";
 
 type ResultData = {
   success: boolean;
-  attempt?: string[]; // what the user placed into slots
+  attempt?: unknown;
   done?: boolean;
   message?: string;
-
-  // optional: if you want ResultScene to have a fallback route
-  kind?: ScreenKind;
 };
 
 export class ResultScene extends Phaser.Scene {
@@ -81,20 +70,11 @@ export class ResultScene extends Phaser.Scene {
           return;
         }
 
-        const next: any = await fetchNextSentence({
+        const next = await fetchNextSentence({
           attempt: this.state.attempt,
           success: this.state.success,
         });
-
-        if (next.done) {
-          this.scene.start("result", { success: true, done: true, message: next.message });
-          return;
-        }
-
-        const kind: ScreenKind = (next.kind ?? this.state.kind ?? "sentence") as ScreenKind;
-        const sceneKey = kind;
-
-        this.scene.start(sceneKey, next.data);
+        await startNextScreen(this, next);
       } catch {
         this.scene.start("result", { success: false, done: true, message: "Server error" });
       }

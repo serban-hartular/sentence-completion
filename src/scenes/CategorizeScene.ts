@@ -5,19 +5,12 @@ import { TextArea } from "../ui/text/TextArea";
 import { WordCard } from "../objects/WordCard";
 import { randomDistributePoints } from "../ui/layout/randomDistribute";
 import { TwoColumnCategorizeLayoutGenerator } from "../ui/layout/TwoColumnCategorizeLayoutGenerator";
-
-export type CategorizeSceneData = {
-  prompt: string;
-  headers: string[];          // length 2
-  slotsPerColumn: number[];   // length 2
-  words: string[];            // unique
-  correctColumn: number[];    // same length as words, values 0 or 1
-};
+import type { CategorizeSceneData } from "../types/screenData";
 
 // attempt: for each word in data.words -> 0/1 if placed, else -1
 export type CategorizeAttempt = number[];
 
-export class CategorizeScene extends SlotScreen {
+export class CategorizeScene extends SlotScreen<WordCard> {
   protected dataIn!: CategorizeSceneData;
   protected slotToColumn: number[] = [];
 
@@ -89,7 +82,7 @@ export class CategorizeScene extends SlotScreen {
     }
 
     // Slots
-    const slotSpecs: SlotSpec[] = layout.slots.map((s) => ({
+    const slotSpecs: SlotSpec<WordCard>[] = layout.slots.map((s) => ({
       x: s.x,
       y: s.y,
       w: s.w,
@@ -166,9 +159,5 @@ export class CategorizeScene extends SlotScreen {
     }
 
     return true;
-  }
-
-  protected override getResultPayloadExtras(): Record<string, unknown> {
-    return { kind: "categorize" };
   }
 }

@@ -8,7 +8,7 @@ import { SimpleGridVocabLayoutGenerator } from "../ui/layout/SimpleGridVocabLayo
 import { ImageRegistry } from "../images/imageRegistry";
 import type { VocabSceneData } from "../types/VocabSceneData";
 
-export class VocabScene extends SlotScreen {
+export class VocabScene extends SlotScreen<WordCard> {
   private dataIn!: VocabSceneData;
 
   constructor() {
@@ -69,7 +69,7 @@ export class VocabScene extends SlotScreen {
 
     // Build slots with explicit slot indices (0..slotCount-1)
     // We'll position each target's slot according to layout, but slotIndex comes from server.
-    const slotSpecs: SlotSpec[] = Array.from({ length: this.dataIn.slotCount }).map(() => ({
+    const slotSpecs: SlotSpec<WordCard>[] = Array.from({ length: this.dataIn.slotCount }).map(() => ({
       x: -9999,
       y: -9999,
       w: slotW,
@@ -173,9 +173,5 @@ export class VocabScene extends SlotScreen {
       if (attempt[i] !== this.dataIn.correct[i]) return false;
     }
     return true;
-  }
-
-  protected override getResultPayloadExtras(): Record<string, unknown> {
-     return { kind: "vocab" };
   }
 }

@@ -4,19 +4,10 @@ import {
   fetchNextSentence,
   fetchSequences,
   selectSequence,
+  type SelectResponse,
 } from "../api/sentenceApi";
-import { setPronunciations } from "../audio/pronunciationRegistry";
-import { setImages } from "../images/imageRegistry";
 import { SFX } from "../audio/soundKeys";
-
-type ScreenKind =
-  | "sentence"
-  | "vocab"
-  | "mark_words"
-  | "categorize"
-  | "sorted-lists"
-  | "sort-from-text"
-  | "underline-from-text";
+import { startNextScreen } from "./screenFlow";
 
 export class WelcomeScene extends Phaser.Scene {
   constructor() {
@@ -30,89 +21,6 @@ export class WelcomeScene extends Phaser.Scene {
     this.load.audio(SFX.SUCCESS, "/sfx/success.mp3");
     this.load.audio(SFX.TRY_AGAIN, "/sfx/try_again.mp3");
     this.load.audio(SFX.DONE, "/sfx/success.mp3");
-  }
-
-  /**
-   * Pronunciations map: word -> urlPath
-   * Example: { suis: "/assets/pron/fr/suis.m4a" }
-   *
-   * IMPORTANT:
-   * - key MUST be identical to url
-   * - url is used as-is (same-origin), no rewriting to backend origin
-   */
-  private async loadPronunciations(pronunciations: Record<string, string>): Promise<void> {
-    const loader = new Phaser.Loader.LoaderPlugin(this);
-
-    let queuedAny = false;
-
-    for (const word of Object.keys(pronunciations)) {
-      const url = pronunciations[word]; // e.g. "/assets/pron/fr/suis.m4a"
-      const key = url;                  // key identical to url
-
-      if (!this.cache.audio.exists(key)) {
-        //console.log("Loading audio", key);
-        loader.audio(key, url);
-        queuedAny = true;
-      }
-    }
-
-    if (!queuedAny) return;
-
-    await new Promise<void>((resolve, reject) => {
-      loader.once(Phaser.Loader.Events.COMPLETE, () => resolve());
-      loader.once(Phaser.Loader.Events.FILE_LOAD_ERROR, (file: any) =>
-        reject(new Error(`Audio load error: ${file?.key ?? "unknown"}`))
-      );
-      loader.start();
-    });
-  }
-
-  /**
-   * Images map can be:
-   *   imageId -> "/assets/images/thing.png"
-   * or
-   *   imageId -> { key, url }
-   *
-   * For consistency with your audio rule, you *can* also make key===url,
-   * but this supports both forms.
-   *
-   * IMPORTANT: image URLs are used as-is (same-origin), no rewriting.
-   */
-  private async loadImages(images: Record<string, any>): Promise<void> {
-    const loader = new Phaser.Loader.LoaderPlugin(this);
-
-    let queuedAny = false;
-
-    for (const imageId of Object.keys(images)) {
-      const value = images[imageId];
-
-      const url: string =
-        typeof value === "string"
-          ? value
-          : value.url ?? value.path;
-
-      // If your rule is "key identical to url", you can use key=url here too.
-      const key: string =
-        typeof value === "string"
-          ? value
-          : value.key ?? url;
-
-      if (!this.textures.exists(key)) {
-        //console.log("Loading image", key);
-        loader.image(key, url);
-        queuedAny = true;
-      }
-    }
-
-    if (!queuedAny) return;
-
-    await new Promise<void>((resolve, reject) => {
-      loader.once(Phaser.Loader.Events.COMPLETE, () => resolve());
-      loader.once(Phaser.Loader.Events.FILE_LOAD_ERROR, (file: any) =>
-        reject(new Error(`Image load error: ${file?.key ?? "unknown"}`))
-      );
-      loader.start();
-    });
   }
 
   async create() {
@@ -136,11 +44,11 @@ export class WelcomeScene extends Phaser.Scene {
       })
       .setOrigin(0.5);
 
-    let sequences: { id: string; name: string; kind?: ScreenKind; color?: string }[] = [];
+    let sequences: Awaited<ReturnType<typeof fetchSequences>>["sequences"] = [];
 
     try {
       const res = await fetchSequences();
-      sequences = res.sequences as any;
+      sequences = res.sequences;
     } catch (e) {
       console.error("fetchSequences failed:", e);
       statusText.setText("Server error loading sequences.");
@@ -174,36 +82,15 @@ export class WelcomeScene extends Phaser.Scene {
         statusText.setText("Loading…");
 
         try {
-          const sel: any = await selectSequence(seq.id);
+          const sel: SelectResponse = await selectSequence(seq.id);
           if (!sel.ok) {
             statusText.setText(sel.error ?? "Selection error");
             this.input.enabled = true;
             return;
           }
 
-          // Store manifests in registries
-          if (sel.pronunciations) setPronunciations(sel.pronunciations);
-          if (sel.images) setImages(sel.images);
-
-          // Dynamically load assets (same-origin URLs/paths; keys identical to URLs for audio)
-          if (sel.pronunciations) await this.loadPronunciations(sel.pronunciations);
-          if (sel.images) await this.loadImages(sel.images);
-
-          const next: any = await fetchNextSentence();
-
-          if (next.done) {
-            this.scene.start("result", {
-              success: true,
-              done: true,
-              message: next.message,
-            });
-            return;
-          }
-
-          const kind: ScreenKind = (next.kind ?? seq.kind ?? "sentence") as ScreenKind;
-          const sceneKey = kind //=== "vocab" ? "vocab" : "sentence";
-
-          this.scene.start(sceneKey, next.data);
+          const next = await fetchNextSentence();
+          await startNextScreen(this, next);
         } catch (e) {
           console.error(e);
           this.scene.start("result", {

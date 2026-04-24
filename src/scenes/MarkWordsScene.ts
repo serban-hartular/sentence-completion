@@ -1,44 +1,28 @@
 // src/scenes/MarkWordsScene.ts
 import Phaser from "phaser";
-import { WordToken, type MarkStyle, type SetMarkedOptions } from "../objects/WordToken";
-import { MarkWordsLayoutGenerator, type WordsLayoutMode } from "../ui/layout/MarkWordsLayoutGenerator";
+import { WordToken, type SetMarkedOptions } from "../objects/WordToken";
+import { MarkWordsLayoutGenerator } from "../ui/layout/MarkWordsLayoutGenerator";
 // If you already have these utilities, use them. Otherwise replace with your own UI.
 import { TextArea } from "../ui/text/TextArea";
 import { CheckableExerciseScene } from "../ui/CheckableExerciseScene";
-
-export interface MarkWordsTaskData {
-  prompt: string;
-  words: string[];
-
-  markStyle: MarkStyle;          // "circle" | "cross" | "underline"
-  allowMultiple: boolean;        // multi-select vs single-select
-  layout: WordsLayoutMode;       // "row" | "paragraph"
-
-  // Optional: allow frontend to compute success
-  correctMarked?: string[];
-
-  // Optional: prefills (should be silent)
-  initialMarked?: string[];
-}
+import type { MarkWordsSceneData } from "../types/screenData";
 
 export interface MarkWordsAttempt {
   marked: string[];
 }
 
 export class MarkWordsScene extends CheckableExerciseScene<MarkWordsAttempt> {
-  private task!: MarkWordsTaskData;
+  private task!: MarkWordsSceneData;
   private tokens: WordToken[] = [];
 
   // For single-select, track current
   private selectedToken?: WordToken;
 
-  protected exerciseKind = "mark_words";
-
   constructor() {
     super({ key: "mark_words" });
   }
 
-  create(data: MarkWordsTaskData) {
+  create(data: MarkWordsSceneData) {
     console.log(data.allowMultiple)
     this.task = data;
 
@@ -193,12 +177,6 @@ export class MarkWordsScene extends CheckableExerciseScene<MarkWordsAttempt> {
   //     success,
   //   });
   // }
-
-    protected getResultPayloadExtras(_attempt: MarkWordsAttempt, _success: boolean): Record<string, unknown> {
-    return {kind: this.exerciseKind};
-  }
-
-
   protected buildAttempt(): MarkWordsAttempt {
     return { marked: this.tokens.filter(t => t.isMarked()).map(t => t.word) };
   }

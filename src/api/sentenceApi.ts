@@ -1,26 +1,38 @@
-import type { SentenceSceneData } from "../types/SentenceSceneData";
+import type {
+  ScreenDataByKind,
+  ScreenDataTypeNameByKind,
+} from "../types/screenData";
 import { APP_CONTEXT } from "./appContext";
+import type { ScreenKind } from "../scenes/screenRegistry";
+import type { ScreenResourceManifests } from "../scenes/screenFlow";
 
 // const API_BASE = "http://46.62.200.84:5000" //"http://localhost:5000";
 //const API_BASE = `${window.location.protocol}//${window.location.hostname}:5000`;
 const API_BASE = ''
 
 
-export type ScreenKind = "sentence" | "vocab";
-
-export type SequenceInfo = { id: string; name: string; kind: ScreenKind; color: string };
+export type SequenceInfo = { id: string; name: string; color: string };
 export type SequencesResponse = { sequences: SequenceInfo[] };
 
 
 // export type PronunciationEntry = { key: string; url: string };
 
 export type SelectResponse =
-  | { ok: true; sequenceId: string; pronunciations: Record<string,string>; images: Record<string,string> }
+  | { ok: true; sequenceId: string }
   | { ok: false; error: string };
+
+export type NextScreenResponseByKind = {
+  [K in ScreenKind]: {
+    done: false;
+    kind: K;
+    data: ScreenDataByKind[K];
+    dataTypeName?: ScreenDataTypeNameByKind[K];
+  } & ScreenResourceManifests;
+}[ScreenKind];
 
 export type NextResponse =
   | { done: true; message?: string }
-  | { done: false; data: SentenceSceneData };
+  | NextScreenResponseByKind;
 
 function getTabPlayerId(): string {
   const key = "player_id";
@@ -98,7 +110,7 @@ export async function selectSequence(sequenceId: string): Promise<SelectResponse
   return (await res.json()) as SelectResponse;
 }
 
-export async function fetchNextSentence(payload?: { attempt?: string[]; success?: boolean }): Promise<NextResponse> {
+export async function fetchNextSentence(payload?: { attempt?: unknown; success?: boolean }): Promise<NextResponse> {
   const res = await fetch(`${API_BASE}/api/next`, {
     method: "POST",
     headers: playerHeaders(),

@@ -1,6 +1,7 @@
 // src/objects/WordCard.ts
 import Phaser from "phaser";
 import { PronunciationRegistry } from "../audio/pronunciationRegistry";
+import { SlotItem } from "./SlotItem";
 
 export type WordCardOptions = {
   width?: number;
@@ -9,13 +10,8 @@ export type WordCardOptions = {
   numCharsShrink? : number;
 };
 
-export class WordCard extends Phaser.GameObjects.Container {
+export class WordCard extends SlotItem {
   readonly word: string;
-
-  homeX: number;
-  homeY: number;
-
-  private currentSlotIndex: number | null = null;
 
   private numCharsShrink : number;
 
@@ -27,9 +23,6 @@ export class WordCard extends Phaser.GameObjects.Container {
 
   private displayWord: string;
 
-  /** True iff this card is intended to be draggable by the player. */
-  public isDraggable: boolean = false;
-
   constructor(
     scene: Phaser.Scene,
     centerX: number,
@@ -40,7 +33,7 @@ export class WordCard extends Phaser.GameObjects.Container {
     const w = opts.width ?? 100;
     const h = opts.height ?? 60;
 
-    super(scene, centerX - w / 2, centerY - h / 2);
+    super(scene, centerX, centerY, w, h);
 
     this.word = word;
     this.displayWord = word;
@@ -65,17 +58,12 @@ export class WordCard extends Phaser.GameObjects.Container {
 
     this.add([this.hit, this.label]);
 
-    this.homeX = this.x;
-    this.homeY = this.y;
-
     if (word.length > this.numCharsShrink) {
       this.fitLongWordText(w);
     }
 
     this.hit.setInteractive({ useHandCursor: true });
-    this.hit.setData("card", this);
-
-    scene.add.existing(this);
+    this.registerDragTarget(this.hit);
 
     if (opts.draggable) this.enableDragging();
 
@@ -83,14 +71,6 @@ export class WordCard extends Phaser.GameObjects.Container {
       const key = PronunciationRegistry[this.word];
       if (key) this.scene.sound.play(key, { volume: 0.8 });
     });
-  }
-
-  // --- Slot index tracking (no UI behavior here) ---
-  public setSlotIndex(newIndex: number | null) {
-    this.currentSlotIndex = newIndex;
-  }
-  public getSlotIndex(): number | null {
-    return this.currentSlotIndex;
   }
 
   // --- Display helpers (slots can call these) ---
@@ -107,18 +87,6 @@ export class WordCard extends Phaser.GameObjects.Container {
 
   public resetDisplayWord() {
     this.setDisplayWord(this.word);
-  }
-
-  get centerX() {
-    return this.x + this.cardWidth / 2;
-  }
-  get centerY() {
-    return this.y + this.cardHeight / 2;
-  }
-
-  setCenter(x: number, y: number) {
-    this.x = x - this.cardWidth / 2;
-    this.y = y - this.cardHeight / 2;
   }
 
   private fitLongWordText(cardWidth: number) {
@@ -140,33 +108,7 @@ export class WordCard extends Phaser.GameObjects.Container {
     }
   }
 
-  enableDragging() {
-    this.isDraggable = true;
-    this.scene.input.setDraggable(this.hit);
-
-    this.hit.on("pointerover", () => this.setScale(1.03));
-    this.hit.on("pointerout", () => this.setScale(1.0));
-  }
-
-  snapToCenter(x: number, y: number) {
-    this.scene.tweens.add({
-      targets: this,
-      x: x - this.cardWidth / 2,
-      y: y - this.cardHeight / 2,
-      duration: 120,
-      ease: "Back.Out",
-    });
-  }
-
-  returnHome() {
-    this.currentSlotIndex = null;
+  public override clearSlotState() {
     this.resetDisplayWord();
-    this.scene.tweens.add({
-      targets: this,
-      x: this.homeX,
-      y: this.homeY,
-      duration: 120,
-      ease: "Back.Out",
-    });
   }
 }

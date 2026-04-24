@@ -6,13 +6,7 @@ import {
   type MarkableTextChunk,
 } from "../ui/text/InteractiveTextArea";
 import { CheckableExerciseScene } from "../ui/CheckableExerciseScene";
-
-export type UnderlineFromTextSceneData = {
-  prompt: string;
-  sourceText: InteractiveTextChunk[];
-  correctMarkedWords?: string[];
-  initialMarkedWords?: string[];
-};
+import type { UnderlineFromTextSceneData } from "../types/screenData";
 
 export type UnderlineFromTextAttempt = {
   marked: string[];
@@ -22,8 +16,6 @@ export class UnderlineFromTextScene extends CheckableExerciseScene<UnderlineFrom
   private task!: UnderlineFromTextSceneData;
   private chunks: InteractiveTextChunk[] = [];
   private textArea?: InteractiveTextArea;
-
-  protected exerciseKind = "underline-from-text";
 
   constructor() {
     super({ key: "underline-from-text" });
@@ -90,10 +82,6 @@ export class UnderlineFromTextScene extends CheckableExerciseScene<UnderlineFrom
       if (!expected.has(word)) return false;
     }
     return true;
-  }
-
-  protected getResultPayloadExtras(): Record<string, unknown> {
-    return { kind: this.exerciseKind };
   }
 
   private toggleChunk(index: number) {

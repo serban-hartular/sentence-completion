@@ -7,18 +7,11 @@ import {
 } from "../ui/text/GrabbableTextArea";
 import { WordCard } from "../objects/WordCard";
 import { RowCategorizeLayoutGenerator } from "../ui/layout/RowCategorizeLayoutGenerator";
-
-export type SortFromTextSceneData = {
-  prompt: string;
-  sourceText: GrabbableTextChunk[];
-  headers: string[];
-  slotsPerColumn: number[]; // interpreted here as slots per row
-  correctColumnContents: string[][];
-};
+import type { SortFromTextSceneData } from "../types/screenData";
 
 export type SortFromTextAttempt = string[][];
 
-export class SortFromTextScene extends SlotScreen {
+export class SortFromTextScene extends SlotScreen<WordCard> {
   protected dataIn!: SortFromTextSceneData;
 
   private slotToRow: number[] = [];
@@ -110,7 +103,7 @@ export class SortFromTextScene extends SlotScreen {
         .setOrigin(0.5);
     }
 
-    const slotSpecs: SlotSpec[] = layout.slots.map((s) => ({
+    const slotSpecs: SlotSpec<WordCard>[] = layout.slots.map((s) => ({
       x: s.x,
       y: s.y,
       w: s.w,
@@ -171,10 +164,6 @@ export class SortFromTextScene extends SlotScreen {
     return true;
   }
 
-  protected getResultPayloadExtras(): Record<string, unknown> {
-    return { kind: "sort-from-text" };
-  }
-
   protected override removeFromSlot(card: WordCard) {
     super.removeFromSlot(card);
 
@@ -191,7 +180,7 @@ protected override trySnapOrSwap(card: WordCard) {
     if (prev.occupant === card) prev.occupant = null;
     prev.callbacks?.onRemove?.(card, prevIndex);
     card.setSlotIndex(null);
-    card.resetDisplayWord();
+    card.clearSlotState();
   }
 
   let bestIndex = -1;
@@ -254,7 +243,7 @@ protected override trySnapOrSwap(card: WordCard) {
   }
 
   other.setSlotIndex(null);
-  other.resetDisplayWord();
+  other.clearSlotState();
 
   if (this.shouldRemoveIfReleased(other)) {
     this.destroyCard(other);

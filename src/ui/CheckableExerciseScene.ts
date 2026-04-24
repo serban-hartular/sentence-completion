@@ -26,7 +26,7 @@ export abstract class CheckableExerciseScene<TAttempt> extends Phaser.Scene {
   }
 
   /**
-   * Optional: add extra fields for ResultScene (e.g. { kind: "vocab" }).
+   * Optional: add extra fields for ResultScene.
    */
   protected getResultPayloadExtras(_attempt: TAttempt, _success: boolean): Record<string, unknown> {
     return {};

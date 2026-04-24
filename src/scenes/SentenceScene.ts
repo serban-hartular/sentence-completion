@@ -9,7 +9,7 @@ import { TextArea } from "../ui/text/TextArea";
 import { SimpleRowSlotLayoutGenerator } from "../ui/layout/SimpleRowSlotLayoutGenerator";
 import { randomDistributePoints } from "../ui/layout/randomDistribute";
 
-export class SentenceScene extends SlotScreen {
+export class SentenceScene extends SlotScreen<WordCard> {
   private dataIn!: SentenceSceneData;
   private look: SentenceScreenLook = new SentenceScreenLook();
 
@@ -95,7 +95,7 @@ export class SentenceScene extends SlotScreen {
     const slotCenters = layout.slots;
 
     // --- Build SlotSpecs with callbacks + initial words ---
-    const specs: SlotSpec[] = [];
+    const specs: SlotSpec<WordCard>[] = [];
     let flatIndex = 0;
 
     for (let r = 0; r < rows.length; r++) {

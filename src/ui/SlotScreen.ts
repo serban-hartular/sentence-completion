@@ -1,24 +1,24 @@
 // src/ui/slots/SlotScreen.ts
 import Phaser from "phaser";
-import { WordCard } from "../objects/WordCard";
+import { SlotItem } from "../objects/SlotItem";
 import { SFX } from "../audio/soundKeys";
 
-export type SlotCallbacks = {
-  onPlace?: (card: WordCard, slotIndex: number) => void;
-  onRemove?: (card: WordCard, slotIndex: number) => void;
+export type SlotCallbacks<TCard extends SlotItem = SlotItem> = {
+  onPlace?: (card: TCard, slotIndex: number) => void;
+  onRemove?: (card: TCard, slotIndex: number) => void;
 };
 
-export type SlotSpec = {
+export type SlotSpec<TCard extends SlotItem = SlotItem> = {
   x: number; // center
   y: number; // center
   w: number;
   h: number;
   initialWord?: string; // optional (SentenceScene uses this)
-  callbacks?: SlotCallbacks;
+  callbacks?: SlotCallbacks<TCard>;
 };
 
-type SlotRuntime = SlotSpec & {
-  occupant: WordCard | null;
+type SlotRuntime<TCard extends SlotItem> = SlotSpec<TCard> & {
+  occupant: TCard | null;
   outline: Phaser.GameObjects.Rectangle;
 };
 
@@ -36,9 +36,9 @@ export type SlotScreenConfig = {
 
 import { CheckableExerciseScene } from "../ui/CheckableExerciseScene";
 
-export abstract class SlotScreen extends CheckableExerciseScene<any> {
-  protected slots: SlotRuntime[] = [];
-  protected cards: WordCard[] = [];
+export abstract class SlotScreen<TCard extends SlotItem = SlotItem> extends CheckableExerciseScene<any> {
+  protected slots: SlotRuntime<TCard>[] = [];
+  protected cards: TCard[] = [];
 
   protected snapRadius = 70;
   protected bottomAreaThresholdY: number | null = null;
@@ -51,7 +51,7 @@ export abstract class SlotScreen extends CheckableExerciseScene<any> {
     this.bottomAreaThresholdY = cfg.bottomAreaThresholdY ?? this.bottomAreaThresholdY;
   }
 
-  protected buildSlots(specs: SlotSpec[], cfg: SlotScreenConfig = {}) {
+  protected buildSlots(specs: SlotSpec<TCard>[], cfg: SlotScreenConfig = {}) {
     const outlineCfg = {
       fill: 0xffffff,
       fillAlpha: 0.25,
@@ -81,7 +81,7 @@ export abstract class SlotScreen extends CheckableExerciseScene<any> {
 
   protected enableCardDragging() {
     this.input.on("dragstart", (pointer: Phaser.Input.Pointer, go: any) => {
-      const card = (go as Phaser.GameObjects.GameObject).getData?.("card") as WordCard | undefined;
+      const card = (go as Phaser.GameObjects.GameObject).getData?.("slotItem") as TCard | undefined;
       if (!card) return;
 
       this.children.bringToTop(card);
@@ -95,7 +95,7 @@ export abstract class SlotScreen extends CheckableExerciseScene<any> {
     });
 
     this.input.on("drag", (pointer: Phaser.Input.Pointer, go: any) => {
-      const card = (go as Phaser.GameObjects.GameObject).getData?.("card") as WordCard | undefined;
+      const card = (go as Phaser.GameObjects.GameObject).getData?.("slotItem") as TCard | undefined;
       if (!card) return;
 
       const wp = this.cameras.main.getWorldPoint(pointer.x, pointer.y);
@@ -110,7 +110,7 @@ export abstract class SlotScreen extends CheckableExerciseScene<any> {
     });
 
     this.input.on("dragend", (_p: any, go: any) => {
-      const card = (go as Phaser.GameObjects.GameObject).getData?.("card") as WordCard | undefined;
+      const card = (go as Phaser.GameObjects.GameObject).getData?.("slotItem") as TCard | undefined;
       if (!card) return;
 
       card.setScale(1.0);
@@ -128,7 +128,7 @@ export abstract class SlotScreen extends CheckableExerciseScene<any> {
     });
   }
 
-  protected removeFromSlot(card: WordCard) {
+  protected removeFromSlot(card: TCard) {
     const idx = card.getSlotIndex();
     if (idx === null) return;
 
@@ -139,10 +139,10 @@ export abstract class SlotScreen extends CheckableExerciseScene<any> {
     slot.callbacks?.onRemove?.(card, idx);
 
     card.setSlotIndex(null);
-    card.resetDisplayWord();
+    card.clearSlotState();
   }
 
-  protected trySnapOrSwap(card: WordCard) {
+  protected trySnapOrSwap(card: TCard) {
     const prevIndex = card.getSlotIndex();
 
     // Detach from previous slot (runtime bookkeeping + callback)
@@ -151,7 +151,7 @@ export abstract class SlotScreen extends CheckableExerciseScene<any> {
       if (prev.occupant === card) prev.occupant = null;
       prev.callbacks?.onRemove?.(card, prevIndex);
       card.setSlotIndex(null);
-      card.resetDisplayWord();
+      card.clearSlotState();
     }
 
     // Find nearest slot
@@ -203,11 +203,11 @@ export abstract class SlotScreen extends CheckableExerciseScene<any> {
 
     // Otherwise kick it out
     other.setSlotIndex(null);
-    other.resetDisplayWord();
+    other.clearSlotState();
     other.returnHome();
   }
 
-  protected placeCardInSlot(card: WordCard, slotIndex: number, opts: { playSfx?: boolean } = {}) {
+  protected placeCardInSlot(card: TCard, slotIndex: number, opts: { playSfx?: boolean } = {}) {
     const { playSfx = true } = opts;
     const slot = this.slots[slotIndex];
 
