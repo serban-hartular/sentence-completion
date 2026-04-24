@@ -2,6 +2,9 @@ import type { MarkStyle } from "../objects/WordToken";
 import type { GrabbableTextChunk } from "../ui/text/GrabbableTextArea";
 import type { InteractiveTextChunk } from "../ui/text/InteractiveTextArea";
 import type { WordsLayoutMode } from "../ui/layout/MarkWordsLayoutGenerator";
+import type { MemoryCardContent } from "./MemoryCardContent";
+
+export type { MemoryCardContent, MemoryShapeType } from "./MemoryCardContent";
 
 export type SentenceSceneData = {
   prompt: string;
@@ -66,6 +69,20 @@ export type UnderlineFromTextSceneData = {
   initialMarkedWords?: string[];
 };
 
+export type MemorySequenceItem = {
+  id: string;
+  content: MemoryCardContent;
+};
+
+export type MemorySequenceItemInput = MemorySequenceItem | MemoryCardContent;
+
+export type MemorySequenceSceneData = {
+  prompt: string;
+  items: MemorySequenceItemInput[];
+  cardSize?: number;
+  studyButtonLabel?: string;
+};
+
 export type ScreenDataByKind = {
   sentence: SentenceSceneData;
   vocab: VocabSceneData;
@@ -74,6 +91,7 @@ export type ScreenDataByKind = {
   "sorted-lists": CategorizeSceneData;
   "sort-from-text": SortFromTextSceneData;
   "underline-from-text": UnderlineFromTextSceneData;
+  "memory-sequence": MemorySequenceSceneData;
 };
 
 export type ScreenDataTypeNameByKind = {
@@ -84,4 +102,5 @@ export type ScreenDataTypeNameByKind = {
   "sorted-lists": "CategorizeSceneData";
   "sort-from-text": "SortFromTextSceneData";
   "underline-from-text": "UnderlineFromTextSceneData";
+  "memory-sequence": "MemorySequenceSceneData";
 };

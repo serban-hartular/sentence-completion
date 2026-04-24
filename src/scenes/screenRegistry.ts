@@ -5,6 +5,7 @@ import type {
 } from "../types/screenData";
 import { CategorizeScene } from "./CategorizeScene";
 import { MarkWordsScene } from "./MarkWordsScene";
+import { MemorySequenceScene } from "./MemorySequenceScene";
 import { ResultScene } from "./ResultScene";
 import { SentenceScene } from "./SentenceScene";
 import { SortFromTextScene } from "./SortFromTextScene";
@@ -21,6 +22,7 @@ export const SCREEN_KIND_VALUES = [
   "sorted-lists",
   "sort-from-text",
   "underline-from-text",
+  "memory-sequence",
 ] as const;
 
 export type ScreenKind = (typeof SCREEN_KIND_VALUES)[number];
@@ -80,6 +82,12 @@ export const PLAYABLE_SCREEN_SCENES = [
     sceneKey: "underline-from-text",
     sceneClass: UnderlineFromTextScene,
     dataTypeName: "UnderlineFromTextSceneData",
+  }),
+  definePlayableScreen({
+    kind: "memory-sequence",
+    sceneKey: "memory-sequence",
+    sceneClass: MemorySequenceScene,
+    dataTypeName: "MemorySequenceSceneData",
   }),
 ] as const;
 
